@@ -42,18 +42,19 @@ namespace FixIFix
             }
         }
 
-        static void DumpPatch(string filepath)
+        static void DumpPatch(string patchFilePath)
         {
-            PatchReader reader = new PatchReader(filepath);
-            reader.Read();
+            PatchReader reader = new PatchReader();
+            reader.Read(patchFilePath);
         }
 
-        static void DumpDll(string filepath)
+        static void DumpDll(string dllFilePath)
         {
-            // TODO:
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read(dllFilePath);
         }
 
-        static void Check(string patchFile, string apkFile)
+        static void Check(string patchFilePath, string apkFilePath)
         {
             // TODO:
         }
