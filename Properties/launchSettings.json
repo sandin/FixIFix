@@ -2,7 +2,7 @@
   "profiles": {
     "FixIFix": {
       "commandName": "Project",
-      "commandLineArgs": "dumppatch j:\\project\\unity\\InjectFixDemo\\Assembly-CSharp.patch.bytes"
+      "commandLineArgs": "dumpdll ..\\..\\..\\Test\\data\\Managed\\Assembly-CSharp.dll"
     }
   }
 }

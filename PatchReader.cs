@@ -5,162 +5,17 @@ using System.Text;
 
 namespace FixIFix
 {
-    namespace IFix
-    {
-        public class BinaryPatch
-        {
-            public ulong instructionMagic;
-            public string interfaceBridgeTypeName;
-            public string[] externTypes;
-            public Method[] methods;
-            public ExternMethod[] externMethods;
-            public string[] internStrings;
-            public FieldInfo[] fieldInfos;
-            public string[] staticFieldTypes;
-            public int[] cctors;
-            public AnonymousStoreyInfo[] anonymousStoreyInfos;
-            public string wrappersManagerImplName;
 
-            public override string ToString()
-            {
-                return "[BinaryPatch " 
-                        + "instructionMagic: " + instructionMagic
-                        + ", interfaceBridgeTypeName: " + interfaceBridgeTypeName
-                        + ", externTypes: " + externTypes
-                        + ", methods: " + methods
-                        + ", externMethods: " + externMethods
-                        + ", internStrings: " + internStrings
-                        + ", fieldInfos: " + fieldInfos
-                        + ", staticFieldTypes: " + staticFieldTypes
-                        + ", cctors: " + cctors
-                        + ", anonymousStoreyInfos: " + anonymousStoreyInfos
-                        + ", wrappersManagerImplName: " + wrappersManagerImplName
-                        + "]";
-            }
-        }
-
-        public class Method
-        {
-            public Instruction[] instructions;
-            public ExceptionHandler[] exceptionHandlers;
-
-            public override string ToString()
-            {
-                return "[Method "
-                        + "instructions: " + instructions
-                        + ", exceptionHandlers: " + exceptionHandlers
-                        + "]";
-            }
-        }
-
-        public class Instruction
-        {
-            public int code;
-            public int operand;
-
-            public override string ToString()
-            {
-                return "[Instruction "
-                        + "code: " + code
-                        + ", operand: " + operand
-                        + "]";
-            }
-        }
-
-        public class ExceptionHandler
-        {
-            public int handlerType;
-            public int catchTypeId;
-            public int tryStart;
-            public int tryEnd;
-            public int handlerStart;
-            public int handlerEnd;
-
-            public override string ToString()
-            {
-                return "[ExceptionHandler "
-                        + "handlerType: " + handlerType
-                        + ", catchTypeId: " + catchTypeId
-                        + ", tryStart: " + tryStart
-                        + ", tryEnd: " + tryEnd
-                        + ", handlerStart: " + handlerStart
-                        + ", handlerEnd: " + handlerEnd
-                        + "]";
-            }
-        }
-
-        public class ExternMethod
-        {
-            public bool isGenericInstance;
-            public string declaringType;
-            public string methodName;
-            public string[] genericArgs; // if isGenericInstance = true
-            public string[] paramTypes;
-
-            public override string ToString()
-            {
-                return "[ExternMethod "
-                        + "isGenericInstance: " + isGenericInstance
-                        + ", declaringType: " + declaringType
-                        + ", methodName: " + methodName
-                        + ", genericArgs: " + genericArgs
-                        + ", paramTypes: " + paramTypes
-                        + "]";
-            }
-        }
-
-        public class FieldInfo
-        {
-            public bool isNewField;
-            public string declaringType;
-            public string fieldName;
-            public string fieldType;
-            public int methodId;
-
-            public override string ToString()
-            {
-                return "[FieldInfo "
-                        + "isNewField: " + isNewField
-                        + ", declaringType: " + declaringType
-                        + ", fieldName: " + fieldName
-                        + ", fieldType: " + fieldType
-                        + ", methodId: " + methodId
-                        + "]";
-            }
-        }
-
-        public class AnonymousStoreyInfo
-        {
-            public int fieldNum;
-            public int[] fieldTypes;
-            public int ctorId;
-            public int[] slots;
-            public int[] vTable;
-
-            public override string ToString()
-            {
-                return "[AnonymousStoreyInfo "
-                        + "fieldNum: " + fieldNum
-                        + ", fieldTypes: " + fieldTypes
-                        + ", ctorId: " + ctorId
-                        + ", slots: " + slots
-                        + ", vTable: " + vTable
-                        + "]";
-            }
-        }
-    }
-
-    class PatchReader
+    public class PatchReader
     {
         public PatchReader()
         {
         }
 
-
-        public IFix.BinaryPatch Read(string patchfile)
+        public IFixPatch Read(string patchfile)
         {
-            Console.WriteLine("patch file: " + patchfile);
-            IFix.BinaryPatch patch = new IFix.BinaryPatch();
+            //Console.WriteLine("patch file: " + patchfile);
+            patch = new IFixPatch();
             using (FileStream fs = File.Open(patchfile, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
@@ -176,24 +31,24 @@ namespace FixIFix
                     }
 
                     int methodCount = reader.ReadInt32();
-                    patch.methods = new IFix.Method[methodCount];
+                    patch.methods = new IFixMethod[methodCount];
                     for (int j = 0; j < methodCount; j++)
                     {
-                        IFix.Method method = new IFix.Method();
+                        IFixMethod method = new IFixMethod();
                         int codeSize = reader.ReadInt32();
-                        method.instructions = new IFix.Instruction[codeSize];
+                        method.instructions = new IFixInstruction[codeSize];
                         for (int i = 0; i < codeSize; i++)
                         {
-                            IFix.Instruction inst = new IFix.Instruction();
+                            IFixInstruction inst = new IFixInstruction();
                             inst.code = reader.ReadInt32();
                             inst.operand = reader.ReadInt32();
                             method.instructions[i] = inst;
                         }
                         int ehsOfMethodCount = reader.ReadInt32();
-                        method.exceptionHandlers = new IFix.ExceptionHandler[ehsOfMethodCount];
+                        method.exceptionHandlers = new IFixExceptionHandler[ehsOfMethodCount];
                         for (int i = 0; i < ehsOfMethodCount; i++)
                         {
-                            IFix.ExceptionHandler eh = new IFix.ExceptionHandler();
+                            IFixExceptionHandler eh = new IFixExceptionHandler();
                             eh.handlerType = reader.ReadInt32();
                             eh.catchTypeId = reader.ReadInt32();
                             eh.tryStart = reader.ReadInt32();
@@ -206,10 +61,10 @@ namespace FixIFix
                     }
 
                     int externMethodCount = reader.ReadInt32();
-                    patch.externMethods = new IFix.ExternMethod[externMethodCount];
+                    patch.externMethods = new IFixExternMethod[externMethodCount];
                     for (int i = 0; i < externMethodCount; i++)
                     {
-                        IFix.ExternMethod externMethod = new IFix.ExternMethod();
+                        IFixExternMethod externMethod = new IFixExternMethod();
                         externMethod.isGenericInstance = reader.ReadBoolean();
                         if (externMethod.isGenericInstance)
                         {
@@ -222,11 +77,13 @@ namespace FixIFix
                                 externMethod.genericArgs[j] = patch.externTypes[reader.ReadInt32()];
                             }
                             int paramCount = reader.ReadInt32();
-                            externMethod.paramTypes = new string[paramCount];
+                            externMethod.parameters = new IFIxParameter[paramCount];
                             for (int j = 0; j < paramCount; j++)
                             {
-                                bool isGeneric = reader.ReadBoolean();
-                                externMethod.paramTypes[j] = isGeneric ? reader.ReadString() : patch.externTypes[reader.ReadInt32()];
+                                IFIxParameter param = new IFIxParameter();
+                                param.isGeneric = reader.ReadBoolean();
+                                param.declaringType = param.isGeneric ? reader.ReadString() : patch.externTypes[reader.ReadInt32()];
+                                externMethod.parameters[j] = param;
                             }
                         }
                         else
@@ -234,10 +91,14 @@ namespace FixIFix
                             externMethod.declaringType = patch.externTypes[reader.ReadInt32()];
                             externMethod.methodName = reader.ReadString();
                             int paramCount = reader.ReadInt32();
-                            externMethod.paramTypes = new string[paramCount];
+                            externMethod.parameters = new IFIxParameter[paramCount];
+
                             for (int j = 0; j < paramCount; j++)
                             {
-                                externMethod.paramTypes[j] = patch.externTypes[reader.ReadInt32()];
+                                IFIxParameter param = new IFIxParameter();
+                                param.isGeneric = false;
+                                param.declaringType = patch.externTypes[reader.ReadInt32()];
+                                externMethod.parameters[j] = param;
                             }
                         }
                         patch.externMethods[i] = externMethod;
@@ -251,10 +112,10 @@ namespace FixIFix
                     }
 
                     int fieldInfoCount = reader.ReadInt32();
-                    patch.fieldInfos = new IFix.FieldInfo[fieldInfoCount];
+                    patch.fieldInfos = new IFixFieldInfo[fieldInfoCount];
                     for (int i = 0; i < fieldInfoCount; i++)
                     {
-                        IFix.FieldInfo fieldInfo = new IFix.FieldInfo();
+                        IFixFieldInfo fieldInfo = new IFixFieldInfo();
                         fieldInfo.isNewField = reader.ReadBoolean();
                         fieldInfo.declaringType = patch.externTypes[reader.ReadInt32()];
                         fieldInfo.fieldName = reader.ReadString();
@@ -320,7 +181,7 @@ namespace FixIFix
             return patch; 
         }
 
-        public static void Dump(IFix.BinaryPatch patch)
+        public void Dump()
         {
             Console.WriteLine("instructionMagic: " + patch.instructionMagic);
             Console.WriteLine("interfaceBridgeTypeName: " + patch.interfaceBridgeTypeName);
@@ -330,22 +191,22 @@ namespace FixIFix
                 Console.WriteLine("externType: " + externType);
             }
             Console.WriteLine("methodCount: " + patch.methods.Length);
-            foreach (IFix.Method method in patch.methods)
+            foreach (IFixMethod method in patch.methods)
             {
                 Console.WriteLine("Method:");
                 Console.WriteLine("instructionCount: " + method.instructions.Length);
-                foreach (IFix.Instruction inst in method.instructions)
+                foreach (IFixInstruction inst in method.instructions)
                 {
                     Console.WriteLine(inst.ToString());
                 }
                 Console.WriteLine("ehsOfMethodCount: " + method.exceptionHandlers.Length);
-                foreach (IFix.ExceptionHandler eh in method.exceptionHandlers)
+                foreach (IFixExceptionHandler eh in method.exceptionHandlers)
                 {
                     Console.WriteLine(eh.ToString());
                 }
             }
             Console.WriteLine("externMethodCount: " + patch.externMethods.Length);
-            foreach (IFix.ExternMethod externMethod in patch.externMethods)
+            foreach (IFixExternMethod externMethod in patch.externMethods)
             {
                 Console.WriteLine(externMethod.ToString());
             }
@@ -354,7 +215,7 @@ namespace FixIFix
                 Console.WriteLine("internString: " + internString);
             }
             Console.WriteLine("fieldInfoCount: " + patch.fieldInfos.Length);
-            foreach (IFix.FieldInfo fieldInfo in patch.fieldInfos)
+            foreach (IFixFieldInfo fieldInfo in patch.fieldInfos)
             {
                 Console.WriteLine(fieldInfo.ToString());
             }
@@ -368,5 +229,6 @@ namespace FixIFix
             }
         }
 
+        private IFixPatch patch;
     }
 }
