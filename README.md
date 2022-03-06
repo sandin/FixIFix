@@ -1,6 +1,6 @@
 # FixIFix
 
-The missing tool for [InjectFix]([https://github.com/Tencent/InjectFix]) patch file.
+The missing tool for [InjectFix](https://github.com/Tencent/InjectFix) patch file.
 
 ​          
 
