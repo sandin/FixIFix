@@ -29,7 +29,7 @@ namespace FixIFix
                     new ReaderParameters { ReadSymbols = false });
             }
 
-            //var resolver = assembly.MainModule.AssemblyResolver as BaseAssemblyResolver;
+            var resolver = assembly.MainModule.AssemblyResolver as BaseAssemblyResolver;
 
             //Gets all types which are declared in the Main Module of "MyLibrary.dll"
             foreach (TypeDefinition type in assembly.MainModule.Types)

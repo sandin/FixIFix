@@ -9,54 +9,59 @@ namespace FixIFix
             Console.WriteLine("Usage:");
             Console.WriteLine("FixIFix.exe dumppatch <patch_file>");
             Console.WriteLine("            dumpdll <assmbly_path>");
-            Console.WriteLine("            check <patch_file> <apk_file>");
+            Console.WriteLine("            check <patch_file> <assmblies_path>");
         }
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             if (args.Length < 2)
             {
                 PrintUsage();
-                return;
+                return 1;
             }
             string command = args[0];
             string filepath = args[1];
             if (command == "dumppatch")
             {
-                DumpPatch(filepath);
+                return DumpPatch(filepath);
             } else if (command == "dumpdll")
             {
-                DumpDll(filepath);
+                return DumpDll(filepath);
             } else if (command == "check") 
             {
                 if (args.Length < 3)
                 {
                     PrintUsage();
-                    return;
+                    return -1;
                 }
                 string apkFile = args[2];
-                Check(filepath, apkFile);
+                return Check(filepath, apkFile);
             } else
             {
                 PrintUsage();
+                return -1;
             }
         }
 
-        static void DumpPatch(string patchFilePath)
+        static int DumpPatch(string patchFilePath)
         {
             PatchReader reader = new PatchReader();
-            reader.Read(patchFilePath);
+            var patch = reader.Read(patchFilePath);
+            PatchReader.Dump(patch);
+            return 0;
         }
 
-        static void DumpDll(string dllFilePath)
+        static int DumpDll(string dllFilePath)
         {
             AssemblyReader reader = new AssemblyReader();
             reader.Read(dllFilePath);
+            return 0;
         }
 
-        static void Check(string patchFilePath, string apkFilePath)
+        static int Check(string patchFilePath, string apkFilePath)
         {
             // TODO:
+            return 0;
         }
     }
 }
