@@ -144,7 +144,7 @@ namespace FixIFix
                         string genericArg = StripAssemblyName(externMethod.genericArgs[i]);
                         if (genericParameter.FullName != genericArg) // TODO: IsTypeEquals?
                         {
-                            return false; // FIXME
+                            return false; 
                         }
                     }
                     for (int i = 0; i < methodDefinition.Parameters.Count; i++)
@@ -154,7 +154,7 @@ namespace FixIFix
                         if (skipAssemblyQualified)
                         {
                             if (parameterDefinition.ParameterType.FullName != StripAssemblyName(parameter.declaringType)) {
-                                return false; // FIXME
+                                return false; 
                             }
                         }
                         else
@@ -185,7 +185,7 @@ namespace FixIFix
 
                             if (parameterTypeName != parameter.declaringType)
                             {
-                                return false; // FIXME
+                                return false;
                             }
                         }
                     }
