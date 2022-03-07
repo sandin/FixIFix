@@ -2,7 +2,7 @@
   "profiles": {
     "FixIFix": {
       "commandName": "Project",
-      "commandLineArgs": "checkpatch ..\\..\\..\\Test\\data\\Assembly-CSharp.patch.bytes j:\\project\\unity\\InjectFixDemo\\Temp-bk\\StagingArea\\Il2Cpp\\Managed\\"
+      "commandLineArgs": "dumppatch C:\\Users\\liudingsan\\Downloads\\Assembly-CSharp.bytes"
     }
   }
 }
