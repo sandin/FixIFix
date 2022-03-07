@@ -185,48 +185,68 @@ namespace FixIFix
         {
             Console.WriteLine("instructionMagic: " + patch.instructionMagic);
             Console.WriteLine("interfaceBridgeTypeName: " + patch.interfaceBridgeTypeName);
-            Console.WriteLine("externTypeCount: " + patch.externTypes.Length);
+
+            Console.WriteLine("externTypes(" + patch.externTypes.Length + "):");
             foreach (string externType in patch.externTypes)
             {
-                Console.WriteLine("externType: " + externType);
+                Console.WriteLine("\t" + externType);
             }
-            Console.WriteLine("methodCount: " + patch.methods.Length);
+            Console.WriteLine("");
+
+            Console.WriteLine("methods: (" + patch.methods.Length + ")");
+            int i = 0;
             foreach (IFixMethod method in patch.methods)
             {
-                Console.WriteLine("Method:");
-                Console.WriteLine("instructionCount: " + method.instructions.Length);
+                Console.WriteLine("\tMethod #" + i + ":");
+                Console.WriteLine("\t\tinstructions(" + method.instructions.Length + "):");
                 foreach (IFixInstruction inst in method.instructions)
                 {
-                    Console.WriteLine(inst.ToString());
+                    Console.WriteLine("\t\t\t" + inst.ToString());
                 }
-                Console.WriteLine("ehsOfMethodCount: " + method.exceptionHandlers.Length);
+                Console.WriteLine("\t\texceptionHandlers(" + method.exceptionHandlers.Length + "):");
                 foreach (IFixExceptionHandler eh in method.exceptionHandlers)
                 {
-                    Console.WriteLine(eh.ToString());
+                    Console.WriteLine("\t\t\t" + eh.ToString());
                 }
+                i++;
+                Console.WriteLine("");
             }
-            Console.WriteLine("externMethodCount: " + patch.externMethods.Length);
+            Console.WriteLine("");
+
+            Console.WriteLine("externMethods(" + patch.externMethods.Length + "):");
             foreach (IFixExternMethod externMethod in patch.externMethods)
             {
-                Console.WriteLine(externMethod.ToString());
+                Console.WriteLine("\t" + externMethod.ToString());
             }
+            Console.WriteLine("");
+
+            Console.WriteLine("internStrings(" + patch.internStrings.Length + "):");
             foreach (string internString in patch.internStrings)
             {
-                Console.WriteLine("internString: " + internString);
+                Console.WriteLine("\t" + internString);
             }
-            Console.WriteLine("fieldInfoCount: " + patch.fieldInfos.Length);
+            Console.WriteLine("");
+
+            Console.WriteLine("fieldInfos(" + patch.fieldInfos.Length + "):");
             foreach (IFixFieldInfo fieldInfo in patch.fieldInfos)
             {
-                Console.WriteLine(fieldInfo.ToString());
+                Console.WriteLine("\t" + fieldInfo.ToString());
             }
+            Console.WriteLine("");
+
+            Console.WriteLine("staticFieldTypes(" + patch.staticFieldTypes.Length + "):");
             foreach (string staticFieldType in patch.staticFieldTypes)
             {
-                Console.WriteLine("staticFieldType: " + staticFieldType);
+                Console.WriteLine("\t" + staticFieldType);
             }
+            Console.WriteLine("");
+
+            Console.WriteLine("cctors(" + patch.cctors.Length + "):");
             foreach (int cctor in patch.cctors)
             {
-                Console.WriteLine("cctor: " + cctor);
+                Console.WriteLine("\t" + cctor);
             }
+            Console.WriteLine("");
         }
 
         private IFixPatch patch;

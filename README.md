@@ -53,103 +53,114 @@ Output:
 ```bash
 instructionMagic: 3910370343942684686
 interfaceBridgeTypeName: IFix.ILFixInterfaceBridge, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externTypeCount: 13
-externType: IFix.ILFixInterfaceBridge, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externType: System.Void, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externType: UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: NewBehaviourScript, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-externType: UnusedClassA, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-externType: UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-methodCount: 2
-Method:
-instructionCount: 19
-[Instruction code: 19, operand: 196611]
-[Instruction code: 160, operand: 0]
-[Instruction code: 76, operand: 0]
-[Instruction code: 8, operand: 0]
-[Instruction code: 88, operand: 0]
-[Instruction code: 88, operand: 100]
-[Instruction code: 57, operand: 196609]
-[Instruction code: 76, operand: 1]
-[Instruction code: 80, operand: 0]
-[Instruction code: 80, operand: 1]
-[Instruction code: 38, operand: 3]
-[Instruction code: 57, operand: 131074]
-[Instruction code: 57, operand: 65539]
-[Instruction code: 160, operand: 1]
-[Instruction code: 57, operand: 65540]
-[Instruction code: 76, operand: 2]
-[Instruction code: 17, operand: 0]
-[Instruction code: 34, operand: 65537]
-[Instruction code: 96, operand: 0]
-ehsOfMethodCount: 0
-Method:
-instructionCount: 37
-[Instruction code: 19, operand: 327683]
-[Instruction code: 160, operand: 2]
-[Instruction code: 76, operand: 0]
-[Instruction code: 8, operand: 0]
-[Instruction code: 88, operand: 0]
-[Instruction code: 88, operand: 100]
-[Instruction code: 57, operand: 196609]
-[Instruction code: 76, operand: 1]
-[Instruction code: 88, operand: 0]
-[Instruction code: 76, operand: 2]
-[Instruction code: 80, operand: 0]
-[Instruction code: 160, operand: 3]
-[Instruction code: 57, operand: 131077]
-[Instruction code: 76, operand: 4]
-[Instruction code: 80, operand: 4]
-[Instruction code: 81, operand: 3]
-[Instruction code: 88, operand: 1]
-[Instruction code: 76, operand: 2]
-[Instruction code: 80, operand: 0]
-[Instruction code: 80, operand: 1]
-[Instruction code: 38, operand: 3]
-[Instruction code: 17, operand: 0]
-[Instruction code: 85, operand: 0]
-[Instruction code: 38, operand: 10]
-[Instruction code: 57, operand: 196614]
-[Instruction code: 57, operand: 65539]
-[Instruction code: 160, operand: 4]
-[Instruction code: 57, operand: 65543]
-[Instruction code: 76, operand: 3]
-[Instruction code: 160, operand: 5]
-[Instruction code: 80, operand: 3]
-[Instruction code: 85, operand: 1]
-[Instruction code: 57, operand: 131080]
-[Instruction code: 57, operand: 65539]
-[Instruction code: 160, operand: 6]
-[Instruction code: 57, operand: 65539]
-[Instruction code: 96, operand: 0]
-ehsOfMethodCount: 0
-externMethodCount: 9
-[ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: .ctor, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Next, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Log, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Get, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Contains, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: True, declaringType: UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: FromJson, genericArgs: System.String[], parameters: FixIFix.IFIxParameter[]]
-[ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-internString: FuncA invoked
-internString: http://www.baidu.com
-internString: FuncB invoked
-internString: FuncB
-internString: {"name": "lds"}
-internString: objA, name=
-internString: UNITY_EDITOR only
-fieldInfoCount: 2
-[FieldInfo isNewField: False, declaringType: NewBehaviourScript, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, fieldName: var2, fieldType: , methodId: 0]
-[FieldInfo isNewField: False, declaringType: UnusedClassA, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, fieldName: name, fieldType: , methodId: 0]
+externTypes(13):
+        IFix.ILFixInterfaceBridge, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        System.Void, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        NewBehaviourScript, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        UnusedClassA, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+
+methods: (2)
+        Method #0:
+                instructions(19):
+                        [Instruction code: 19, operand: 196611]
+                        [Instruction code: 160, operand: 0]
+                        [Instruction code: 76, operand: 0]
+                        [Instruction code: 8, operand: 0]
+                        [Instruction code: 88, operand: 0]
+                        [Instruction code: 88, operand: 100]
+                        [Instruction code: 57, operand: 196609]
+                        [Instruction code: 76, operand: 1]
+                        [Instruction code: 80, operand: 0]
+                        [Instruction code: 80, operand: 1]
+                        [Instruction code: 38, operand: 3]
+                        [Instruction code: 57, operand: 131074]
+                        [Instruction code: 57, operand: 65539]
+                        [Instruction code: 160, operand: 1]
+                        [Instruction code: 57, operand: 65540]
+                        [Instruction code: 76, operand: 2]
+                        [Instruction code: 17, operand: 0]
+                        [Instruction code: 34, operand: 65537]
+                        [Instruction code: 96, operand: 0]
+                exceptionHandlers(0):
+
+        Method #1:
+                instructions(37):
+                        [Instruction code: 19, operand: 327683]
+                        [Instruction code: 160, operand: 2]
+                        [Instruction code: 76, operand: 0]
+                        [Instruction code: 8, operand: 0]
+                        [Instruction code: 88, operand: 0]
+                        [Instruction code: 88, operand: 100]
+                        [Instruction code: 57, operand: 196609]
+                        [Instruction code: 76, operand: 1]
+                        [Instruction code: 88, operand: 0]
+                        [Instruction code: 76, operand: 2]
+                        [Instruction code: 80, operand: 0]
+                        [Instruction code: 160, operand: 3]
+                        [Instruction code: 57, operand: 131077]
+                        [Instruction code: 76, operand: 4]
+                        [Instruction code: 80, operand: 4]
+                        [Instruction code: 81, operand: 3]
+                        [Instruction code: 88, operand: 1]
+                        [Instruction code: 76, operand: 2]
+                        [Instruction code: 80, operand: 0]
+                        [Instruction code: 80, operand: 1]
+                        [Instruction code: 38, operand: 3]
+                        [Instruction code: 17, operand: 0]
+                        [Instruction code: 85, operand: 0]
+                        [Instruction code: 38, operand: 10]
+                        [Instruction code: 57, operand: 196614]
+                        [Instruction code: 57, operand: 65539]
+                        [Instruction code: 160, operand: 4]
+                        [Instruction code: 57, operand: 65543]
+                        [Instruction code: 76, operand: 3]
+                        [Instruction code: 160, operand: 5]
+                        [Instruction code: 80, operand: 3]
+                        [Instruction code: 85, operand: 1]
+                        [Instruction code: 57, operand: 131080]
+                        [Instruction code: 57, operand: 65539]
+                        [Instruction code: 160, operand: 6]
+                        [Instruction code: 57, operand: 65539]
+                        [Instruction code: 96, operand: 0]
+                exceptionHandlers(0):
+
+
+externMethods(9):
+        [ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: .ctor, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Next, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Log, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Get, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Contains, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: True, declaringType: UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: FromJson, genericArgs: System.String[], parameters: FixIFix.IFIxParameter[]]
+        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+
+internStrings(7):
+        FuncA invoked
+        http://www.baidu.com
+        FuncB invoked
+        FuncB
+        {"name": "lds"}
+        objA, name=
+        UNITY_EDITOR only
+
+fieldInfos(2):
+        [FieldInfo isNewField: False, declaringType: NewBehaviourScript, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, fieldName: var2, fieldType: , methodId: 0]
+        [FieldInfo isNewField: False, declaringType: UnusedClassA, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, fieldName: name, fieldType: , methodId: 0]
+
+staticFieldTypes(0):
+
+cctors(0):
 ```
 
 ​        
@@ -167,47 +178,53 @@ Output:
 ```
 Type: <Module>
 Type: NewBehaviourScript
-System.Void NewBehaviourScript::Start()
-System.Void NewBehaviourScript::Update()
-System.Void NewBehaviourScript::FuncA()
-System.Void NewBehaviourScript::FuncB()
-System.Void NewBehaviourScript::UnusedMethod1()
-System.Void NewBehaviourScript::.ctor()
-System.Double unusedField1
+        Method: System.Void NewBehaviourScript::Start()
+        Method: System.Void NewBehaviourScript::Update()
+        Method: System.Void NewBehaviourScript::FuncA()
+        Method: System.Void NewBehaviourScript::FuncB()
+        Method: System.Void NewBehaviourScript::UnusedMethod1()
+        Method: System.Void NewBehaviourScript::.ctor()
+        Field: System.Double unusedField1
+
 Type: UnusedBehaviourScript
-System.Void UnusedBehaviourScript::Start()
-System.Void UnusedBehaviourScript::Update()
-System.Void UnusedBehaviourScript::.ctor()
+        Method: System.Void UnusedBehaviourScript::Start()
+        Method: System.Void UnusedBehaviourScript::Update()
+        Method: System.Void UnusedBehaviourScript::.ctor()
+
 Type: UnusedClassA
-System.Void UnusedClassA::.ctor()
-System.String name
+        Method: System.Void UnusedClassA::.ctor()
+        Field: System.String name
+
 Type: IFix.ILFixDynamicMethodWrapper
-System.Void IFix.ILFixDynamicMethodWrapper::.ctor(IFix.Core.VirtualMachine,System.Int32,System.Object)
-System.Void IFix.ILFixDynamicMethodWrapper::__Gen_Wrap_0(System.Object)
-System.Void IFix.ILFixDynamicMethodWrapper::.cctor()
-IFix.Core.VirtualMachine virtualMachine
-System.Int32 methodId
-System.Object anonObj
-IFix.ILFixDynamicMethodWrapper[] wrapperArray
+        Method: System.Void IFix.ILFixDynamicMethodWrapper::.ctor(IFix.Core.VirtualMachine,System.Int32,System.Object)
+        Method: System.Void IFix.ILFixDynamicMethodWrapper::__Gen_Wrap_0(System.Object)
+        Method: System.Void IFix.ILFixDynamicMethodWrapper::.cctor()
+        Field: IFix.Core.VirtualMachine virtualMachine
+        Field: System.Int32 methodId
+        Field: System.Object anonObj
+        Field: IFix.ILFixDynamicMethodWrapper[] wrapperArray
+
 Type: IFix.ILFixInterfaceBridge
-System.Void IFix.ILFixInterfaceBridge::.ctor(System.Int32,System.Int32[],System.Int32,System.Int32[],System.Int32[],IFix.Core.VirtualMachine)
-System.Void IFix.ILFixInterfaceBridge::RefAsyncBuilderStartMethod()
+        Method: System.Void IFix.ILFixInterfaceBridge::.ctor(System.Int32,System.Int32[],System.Int32,System.Int32[],System.Int32[],IFix.Core.VirtualMachine)
+        Method: System.Void IFix.ILFixInterfaceBridge::RefAsyncBuilderStartMethod()
+
 Type: IFix.WrappersManagerImpl
-System.Void IFix.WrappersManagerImpl::.ctor(IFix.Core.VirtualMachine)
-IFix.ILFixDynamicMethodWrapper IFix.WrappersManagerImpl::GetPatch(System.Int32)
-System.Boolean IFix.WrappersManagerImpl::IsPatched(System.Int32)
-System.Delegate IFix.WrappersManagerImpl::CreateDelegate(System.Type,System.Int32,System.Object)
-System.Object IFix.WrappersManagerImpl::CreateWrapper(System.Int32)
-System.Object IFix.WrappersManagerImpl::InitWrapperArray(System.Int32)
-IFix.Core.AnonymousStorey IFix.WrappersManagerImpl::CreateBridge(System.Int32,System.Int32[],System.Int32,System.Int32[],System.Int32[],IFix.Core.VirtualMachine)
-IFix.Core.VirtualMachine virtualMachine
+        Method: System.Void IFix.WrappersManagerImpl::.ctor(IFix.Core.VirtualMachine)
+        Method: IFix.ILFixDynamicMethodWrapper IFix.WrappersManagerImpl::GetPatch(System.Int32)
+        Method: System.Boolean IFix.WrappersManagerImpl::IsPatched(System.Int32)
+        Method: System.Delegate IFix.WrappersManagerImpl::CreateDelegate(System.Type,System.Int32,System.Object)
+        Method: System.Object IFix.WrappersManagerImpl::CreateWrapper(System.Int32)
+        Method: System.Object IFix.WrappersManagerImpl::InitWrapperArray(System.Int32)
+        Method: IFix.Core.AnonymousStorey IFix.WrappersManagerImpl::CreateBridge(System.Int32,System.Int32[],System.Int32,System.Int32[],System.Int32[],IFix.Core.VirtualMachine)
+        Field: IFix.Core.VirtualMachine virtualMachine
+
 Type: IFix.IDMAP0
-System.Int32 value__
-IFix.IDMAP0 NewBehaviourScript-Start0
-IFix.IDMAP0 NewBehaviourScript-FuncB0
-IFix.IDMAP0 NewBehaviourScript-FuncA0
-IFix.IDMAP0 NewBehaviourScript-Update0
-IFix.IDMAP0 NewBehaviourScript-UnusedMethod10
+        Field: System.Int32 value__
+        Field: IFix.IDMAP0 NewBehaviourScript-Start0
+        Field: IFix.IDMAP0 NewBehaviourScript-FuncB0
+        Field: IFix.IDMAP0 NewBehaviourScript-FuncA0
+        Field: IFix.IDMAP0 NewBehaviourScript-Update0
+        Field: IFix.IDMAP0 NewBehaviourScript-UnusedMethod10
 ```
 
 ​    

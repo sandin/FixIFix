@@ -44,12 +44,13 @@ namespace FixIFix
                     //Gets all methods of the current type
                     foreach (MethodDefinition method in type.Methods)
                     {
-                        Console.WriteLine(method.FullName);
+                        Console.WriteLine("\tMethod: " + method.FullName);
                     }
                     foreach (FieldDefinition field in type.Fields)
                     {
-                        Console.WriteLine(field.FieldType.FullName + " " + field.Name);
+                        Console.WriteLine("\tField: " + field.FieldType.FullName + " " + field.Name);
                     }
+                    Console.WriteLine("");
                 }
             }
         }
