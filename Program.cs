@@ -40,6 +40,7 @@ namespace FixIFix
                 return CheckPatch(filepath, assembliesPath);
             } else
             {
+                Console.WriteLine("Error: unknown command: " + command);
                 PrintUsage();
                 return -1;
             }
@@ -69,7 +70,7 @@ namespace FixIFix
             return 0;
         }
 
-        // cmd: "checkpath ..\..\..\Test\data\Assembly-CSharp.patch.bytes ..\..\..\Test\data\Managed"
+        // cmd: "checkpatch ..\..\..\Test\data\Assembly-CSharp.patch.bytes ..\..\..\Test\data\Managed"
         static int CheckPatch(string patchFilePath, string assembliesPath)
         {
             if (!File.Exists(patchFilePath))
@@ -156,7 +157,7 @@ namespace FixIFix
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasType(typeFullName))
+                if (assembly.HasType(typeFullName, true))
                 {
                     found = true;
                     break;
@@ -170,7 +171,7 @@ namespace FixIFix
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasMethod(method))
+                if (assembly.HasMethod(method, true))
                 {
                     found = true;
                     break;
@@ -184,7 +185,7 @@ namespace FixIFix
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasField(field))
+                if (assembly.HasField(field, true))
                 {
                     found = true;
                     break;

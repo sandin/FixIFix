@@ -38,7 +38,7 @@ namespace FixIFix
             foreach (TypeDefinition type in assembly.MainModule.Types)
             {
                 //Writes the full name of a type
-                Console.WriteLine("Type: " + type.FullName);
+                Console.WriteLine("Type: " + type.GetAssemblyQualifiedName());
                 if (type.Name != "<Module>")
                 {
                     //Gets all methods of the current type
@@ -57,19 +57,19 @@ namespace FixIFix
 
         #region Type
 
-        public bool HasType(string typeFullName)
+        public bool HasType(string typeFullName, bool skipAssemblyQualified = false)
         {
-            return GetType(typeFullName) != null;
+            return GetType(typeFullName, skipAssemblyQualified) != null;
         }
 
-        private TypeDefinition GetType(string typeFullName)
+        private TypeDefinition GetType(string typeFullName, bool skipAssemblyQualified = false)
         {
             if (assembly != null)
             {
                 List<TypeDefinition> types = assembly.GetAllType();
                 foreach (TypeDefinition type in types)
                 {
-                    if (IsTypeEquals(type, typeFullName))
+                    if (IsTypeEquals(type, typeFullName, skipAssemblyQualified))
                     {
                         return type; // found
                     }
@@ -78,28 +78,35 @@ namespace FixIFix
             return null;
         }
 
-        private static bool IsTypeEquals(TypeDefinition typeDefinition, string typeFullName)
+        private static bool IsTypeEquals(TypeDefinition typeDefinition, string typeFullName, bool skipAssemblyQualified = false)
         {
-            return typeDefinition.GetAssemblyQualifiedName() == typeFullName;
+            if (skipAssemblyQualified)
+            {
+                return typeDefinition.FullName == StripAssemblyName(typeFullName);
+            }
+            else
+            {
+                return typeDefinition.GetAssemblyQualifiedName(null, false) == typeFullName;
+            }
         }
 
         #endregion
 
         #region Method
 
-            public bool HasMethod(IFixExternMethod method)
+        public bool HasMethod(IFixExternMethod method, bool skipAssemblyQualified = false)
         {
-            return GetMethod(method) != null;
+            return GetMethod(method, skipAssemblyQualified) != null;
         }
  
-        private MethodDefinition GetMethod(IFixExternMethod method)
+        private MethodDefinition GetMethod(IFixExternMethod method, bool skipAssemblyQualified = false)
         {
-            TypeDefinition typeDefinition = GetType(method.declaringType);
+            TypeDefinition typeDefinition = GetType(method.declaringType, skipAssemblyQualified);
             if (typeDefinition != null)
             {
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
-                    if (IsMethodEquals(methodDefinition, method)) {
+                    if (IsMethodEquals(methodDefinition, method, skipAssemblyQualified)) {
                         return methodDefinition;
                     }
                 }
@@ -108,7 +115,7 @@ namespace FixIFix
             return null;
         }
 
-        private static string GetTypeNameOfQualifiedName(string qualifiedName)
+        private static string StripAssemblyName(string qualifiedName)
         {
             if (qualifiedName != null)
             {
@@ -121,11 +128,11 @@ namespace FixIFix
             return qualifiedName;
         }
 
-        private static bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool ignoreAssemblyQualifiedName = true)
+        private static bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool skipAssemblyQualified = false)
         {
             if (methodDefinition != null && externMethod != null)
             {
-                if (IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType)
+                if (IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType, skipAssemblyQualified)
                     && methodDefinition.Name == externMethod.methodName
                     && methodDefinition.IsGenericInstance == externMethod.isGenericInstance
                     && methodDefinition.GenericParameters.Count == (externMethod.genericArgs != null ? externMethod.genericArgs.Length : 0)
@@ -134,20 +141,20 @@ namespace FixIFix
                     for (int i = 0; i < methodDefinition.GenericParameters.Count; i++)
                     {
                         GenericParameter genericParameter = methodDefinition.GenericParameters[i];
-                        string genericArg = GetTypeNameOfQualifiedName(externMethod.genericArgs[i]);
+                        string genericArg = StripAssemblyName(externMethod.genericArgs[i]);
                         if (genericParameter.FullName != genericArg) // TODO: IsTypeEquals?
                         {
-                            return false;
+                            return false; // FIXME
                         }
                     }
                     for (int i = 0; i < methodDefinition.Parameters.Count; i++)
                     {
                         ParameterDefinition parameterDefinition = methodDefinition.Parameters[i];
                         IFIxParameter parameter = externMethod.parameters[i];
-                        if (ignoreAssemblyQualifiedName)
+                        if (skipAssemblyQualified)
                         {
-                            if (parameterDefinition.ParameterType.FullName != GetTypeNameOfQualifiedName(parameter.declaringType)) {
-                                return false;
+                            if (parameterDefinition.ParameterType.FullName != StripAssemblyName(parameter.declaringType)) {
+                                return false; // FIXME
                             }
                         }
                         else
@@ -178,7 +185,7 @@ namespace FixIFix
 
                             if (parameterTypeName != parameter.declaringType)
                             {
-                                return false;
+                                return false; // FIXME
                             }
                         }
                     }
@@ -192,19 +199,19 @@ namespace FixIFix
 
         #region Field
 
-        public bool HasField(IFixFieldInfo field)
+        public bool HasField(IFixFieldInfo field, bool skipAssemblyQualified = false)
         {
-            return GetField(field) != null;
+            return GetField(field, skipAssemblyQualified) != null;
         }
 
-        private FieldDefinition GetField(IFixFieldInfo field)
+        private FieldDefinition GetField(IFixFieldInfo field, bool skipAssemblyQualified = false)
         {
-            TypeDefinition typeDefinition = GetType(field.declaringType);
+            TypeDefinition typeDefinition = GetType(field.declaringType, skipAssemblyQualified);
             if (typeDefinition != null)
             {
                 foreach (FieldDefinition fieldDefinition in typeDefinition.Fields)
                 {
-                    if (IsFieldEquals(fieldDefinition, field)) {
+                    if (IsFieldEquals(fieldDefinition, field, skipAssemblyQualified)) {
                         return fieldDefinition;
                     }
                 }
@@ -213,11 +220,11 @@ namespace FixIFix
             return null;
         }
 
-        private static bool IsFieldEquals(FieldDefinition fieldDefinition, IFixFieldInfo fieldInfo)
+        private static bool IsFieldEquals(FieldDefinition fieldDefinition, IFixFieldInfo fieldInfo, bool skipAssemblyQualified = false)
         {
             if (fieldDefinition != null && fieldInfo != null)
             {
-                return IsTypeEquals(fieldDefinition.DeclaringType, fieldInfo.declaringType)
+                return IsTypeEquals(fieldDefinition.DeclaringType, fieldInfo.declaringType, skipAssemblyQualified)
                     && fieldDefinition.Name == fieldInfo.fieldName; // NOTE: no need to check the fieldType
             }
             return false;

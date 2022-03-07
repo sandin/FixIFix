@@ -216,12 +216,12 @@ namespace FixIFix
             Console.WriteLine("externMethods(" + patch.externMethods.Length + "):");
             foreach (IFixExternMethod externMethod in patch.externMethods)
             {
-                Console.WriteLine("\t" + SplitTypeName(externMethod.declaringType) + "." + externMethod.methodName + ":");
+                Console.WriteLine("\t" + StripAssemblyName(externMethod.declaringType) + "." + externMethod.methodName + ":");
                 Console.WriteLine("\t\tdeclaringType: " + externMethod.declaringType);
                 StringBuilder sb = new StringBuilder();
                 foreach (IFIxParameter p in externMethod.parameters)
                 {
-                    sb.Append(SplitTypeName(p.declaringType));
+                    sb.Append(StripAssemblyName(p.declaringType));
                     if (p.isGeneric)
                     {
                         sb.Append("(isGeneric=");
@@ -268,7 +268,7 @@ namespace FixIFix
             }
             Console.WriteLine("");
         }
-        private static string SplitTypeName(string qualifiedTypeName)
+        private static string StripAssemblyName(string qualifiedTypeName)
         {
             if (qualifiedTypeName != null)
             {
