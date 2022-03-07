@@ -57,19 +57,19 @@ namespace FixIFix
 
         #region Type
 
-        public bool HasType(string typeFullName, bool skipAssemblyQualified = false)
+        public bool HasType(string typeFullName, bool ignoreAssemblyName = false)
         {
-            return GetType(typeFullName, skipAssemblyQualified) != null;
+            return GetType(typeFullName, ignoreAssemblyName) != null;
         }
 
-        private TypeDefinition GetType(string typeFullName, bool skipAssemblyQualified = false)
+        private TypeDefinition GetType(string typeFullName, bool ignoreAssemblyName = false)
         {
             if (assembly != null)
             {
                 List<TypeDefinition> types = assembly.GetAllType();
                 foreach (TypeDefinition type in types)
                 {
-                    if (IsTypeEquals(type, typeFullName, skipAssemblyQualified))
+                    if (IsTypeEquals(type, typeFullName, ignoreAssemblyName))
                     {
                         return type; // found
                     }
@@ -78,9 +78,9 @@ namespace FixIFix
             return null;
         }
 
-        private static bool IsTypeEquals(TypeDefinition typeDefinition, string typeFullName, bool skipAssemblyQualified = false)
+        private static bool IsTypeEquals(TypeDefinition typeDefinition, string typeFullName, bool ignoreAssemblyName = false)
         {
-            if (skipAssemblyQualified)
+            if (ignoreAssemblyName)
             {
                 return typeDefinition.FullName == StripAssemblyName(typeFullName);
             }
@@ -94,19 +94,19 @@ namespace FixIFix
 
         #region Method
 
-        public bool HasMethod(IFixExternMethod method, bool skipAssemblyQualified = false)
+        public bool HasMethod(IFixExternMethod method, bool ignoreAssemblyName = false)
         {
-            return GetMethod(method, skipAssemblyQualified) != null;
+            return GetMethod(method, ignoreAssemblyName) != null;
         }
  
-        private MethodDefinition GetMethod(IFixExternMethod method, bool skipAssemblyQualified = false)
+        private MethodDefinition GetMethod(IFixExternMethod method, bool ignoreAssemblyName = false)
         {
-            TypeDefinition typeDefinition = GetType(method.declaringType, skipAssemblyQualified);
+            TypeDefinition typeDefinition = GetType(method.declaringType, ignoreAssemblyName);
             if (typeDefinition != null)
             {
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
-                    if (IsMethodEquals(methodDefinition, method, skipAssemblyQualified)) {
+                    if (IsMethodEquals(methodDefinition, method, ignoreAssemblyName)) {
                         return methodDefinition;
                     }
                 }
@@ -128,11 +128,11 @@ namespace FixIFix
             return qualifiedName;
         }
 
-        private static bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool skipAssemblyQualified = false)
+        private static bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool ignoreAssemblyName = false)
         {
             if (methodDefinition != null && externMethod != null)
             {
-                if (IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType, skipAssemblyQualified)
+                if (IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType, ignoreAssemblyName)
                     && methodDefinition.Name == externMethod.methodName
                     && methodDefinition.IsGenericInstance == externMethod.isGenericInstance
                     && methodDefinition.GenericParameters.Count == (externMethod.genericArgs != null ? externMethod.genericArgs.Length : 0)
@@ -151,7 +151,7 @@ namespace FixIFix
                     {
                         ParameterDefinition parameterDefinition = methodDefinition.Parameters[i];
                         IFIxParameter parameter = externMethod.parameters[i];
-                        if (skipAssemblyQualified)
+                        if (ignoreAssemblyName)
                         {
                             if (parameterDefinition.ParameterType.FullName != StripAssemblyName(parameter.declaringType)) {
                                 return false; 

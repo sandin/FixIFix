@@ -11,7 +11,19 @@ namespace FixIFix
             Console.WriteLine("Usage:");
             Console.WriteLine("FixIFix.exe dumppatch <patch_file>");
             Console.WriteLine("            dumpdll <assmbly_path>");
-            Console.WriteLine("            checkpatch <patch_file> <assemblies_path>");
+            Console.WriteLine("            checkpatch <patch_file> <assemblies_path> -ignoreAssemblyName");
+        }
+
+        static bool IsoptionInArgs(string[] args, string option)
+        {
+            foreach (var item in args)
+            {
+                if (item == option)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         static int Main(string[] args)
@@ -23,6 +35,7 @@ namespace FixIFix
             }
             string command = args[0];
             string filepath = args[1];
+            bool ignoreAssemblyName = false;
             if (command == "dumppatch")
             {
                 return DumpPatch(filepath);
@@ -36,8 +49,13 @@ namespace FixIFix
                     PrintUsage();
                     return -1;
                 }
+
+                if (args.Length >= 4)
+                {
+                    ignoreAssemblyName = Program.IsoptionInArgs(args, "-ignoreAssemblyName");
+                }
                 string assembliesPath = args[2];
-                return CheckPatch(filepath, assembliesPath);
+                return CheckPatch(filepath, assembliesPath, ignoreAssemblyName);
             } else
             {
                 Console.WriteLine("Error: unknown command: " + command);
@@ -46,7 +64,7 @@ namespace FixIFix
             }
         }
 
-        // cmd: "dumppatch ..\..\..\Test\data\Assembly-CSharp.patch.bytes"
+        // cmd: "dumppatch ..\..\Test\data\Assembly-CSharp.patch.bytes"
         static int DumpPatch(string patchFilePath)
         {
             if (!File.Exists(patchFilePath))
@@ -61,7 +79,7 @@ namespace FixIFix
             return 0;
         }
 
-        // cmd: "dumpdll ..\..\..\Test\data\Managed\Assembly-CSharp.dll"
+        // cmd: "dumpdll ..\..\Test\data\Managed\Assembly-CSharp.dll"
         static int DumpDll(string dllFilePath)
         {
             AssemblyReader reader = new AssemblyReader();
@@ -70,8 +88,8 @@ namespace FixIFix
             return 0;
         }
 
-        // cmd: "checkpatch ..\..\..\Test\data\Assembly-CSharp.patch.bytes ..\..\..\Test\data\Managed"
-        static int CheckPatch(string patchFilePath, string assembliesPath)
+        // cmd: "checkpatch ..\..\Test\data\Assembly-CSharp.patch.bytes ..\..\Test\data\Managed"
+        static int CheckPatch(string patchFilePath, string assembliesPath, bool ignoreAssemblyName)
         {
             if (!File.Exists(patchFilePath))
             {
@@ -109,7 +127,7 @@ namespace FixIFix
             List<string> errors = new List<string>();
             foreach (string typeFullName in patch.externTypes)
             {
-                if (!HasTypeInAssemblies(typeFullName, assemblies)) {
+                if (!HasTypeInAssemblies(typeFullName, assemblies, ignoreAssemblyName)) {
                     errors.Add("Error: can not found type: `" + typeFullName + "`.");
                 }
             }
@@ -117,7 +135,7 @@ namespace FixIFix
             // Check methods
             foreach (IFixExternMethod externMethod in patch.externMethods)
             {
-                if (!HasMethodInAssemblies(externMethod, assemblies)) {
+                if (!HasMethodInAssemblies(externMethod, assemblies, ignoreAssemblyName)) {
                     errors.Add("Error: can not found method: `" + externMethod.methodName + "` in type: " + externMethod.declaringType);
                 }
             }
@@ -129,7 +147,7 @@ namespace FixIFix
                 {
                     continue; // this field has been defined in patch file, no need to check it
                 }
-                if (!HasFieldInAssemblies(field, assemblies))
+                if (!HasFieldInAssemblies(field, assemblies, ignoreAssemblyName))
                 {
                     errors.Add("Error: can not found field: `" + field.fieldName + "` in type: " + field.declaringType);
                 }
@@ -152,12 +170,12 @@ namespace FixIFix
             return 0;
         }
 
-        private static bool HasTypeInAssemblies(string typeFullName, List<AssemblyReader> assemblies)
+        private static bool HasTypeInAssemblies(string typeFullName, List<AssemblyReader> assemblies, bool ignoreAssemblyName)
         {
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasType(typeFullName, true))
+                if (assembly.HasType(typeFullName, ignoreAssemblyName))
                 {
                     found = true;
                     break;
@@ -166,12 +184,12 @@ namespace FixIFix
             return found;
         }
 
-        private static bool HasMethodInAssemblies(IFixExternMethod method, List<AssemblyReader> assemblies)
+        private static bool HasMethodInAssemblies(IFixExternMethod method, List<AssemblyReader> assemblies, bool ignoreAssemblyName)
         {
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasMethod(method, true))
+                if (assembly.HasMethod(method, ignoreAssemblyName))
                 {
                     found = true;
                     break;
@@ -180,12 +198,12 @@ namespace FixIFix
             return found;
         }
 
-        private static bool HasFieldInAssemblies(IFixFieldInfo field, List<AssemblyReader> assemblies)
+        private static bool HasFieldInAssemblies(IFixFieldInfo field, List<AssemblyReader> assemblies, bool ignoreAssemblyName)
         {
             bool found = false;
             foreach (AssemblyReader assembly in assemblies)
             {
-                if (assembly.HasField(field, true))
+                if (assembly.HasField(field, ignoreAssemblyName))
                 {
                     found = true;
                     break;
