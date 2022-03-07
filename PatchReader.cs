@@ -193,7 +193,7 @@ namespace FixIFix
             }
             Console.WriteLine("");
 
-            Console.WriteLine("methods: (" + patch.methods.Length + ")");
+            Console.WriteLine("methods(" + patch.methods.Length + "):");
             int i = 0;
             foreach (IFixMethod method in patch.methods)
             {
@@ -216,7 +216,27 @@ namespace FixIFix
             Console.WriteLine("externMethods(" + patch.externMethods.Length + "):");
             foreach (IFixExternMethod externMethod in patch.externMethods)
             {
-                Console.WriteLine("\t" + externMethod.ToString());
+                Console.WriteLine("\t" + SplitTypeName(externMethod.declaringType) + "." + externMethod.methodName + ":");
+                Console.WriteLine("\t\tdeclaringType: " + externMethod.declaringType);
+                StringBuilder sb = new StringBuilder();
+                foreach (IFIxParameter p in externMethod.parameters)
+                {
+                    sb.Append(SplitTypeName(p.declaringType));
+                    if (p.isGeneric)
+                    {
+                        sb.Append("(isGeneric=");
+                        sb.Append(p.isGeneric);
+                        sb.Append(")");
+                    }
+                    sb.Append(" ");
+                }
+                Console.WriteLine("\t\tparameters(" + externMethod.parameters.Length + "): " + sb.ToString());
+                if (externMethod.isGenericInstance)
+                {
+                    Console.WriteLine("\t\tisGenericInstance: " + externMethod.isGenericInstance);
+                    Console.WriteLine("\t\tgenericArgs: " + externMethod.genericArgs);
+                }
+                Console.WriteLine("");
             }
             Console.WriteLine("");
 
@@ -247,6 +267,18 @@ namespace FixIFix
                 Console.WriteLine("\t" + cctor);
             }
             Console.WriteLine("");
+        }
+        private static string SplitTypeName(string qualifiedTypeName)
+        {
+            if (qualifiedTypeName != null)
+            {
+                int index = qualifiedTypeName.IndexOf(",");
+                if (index != -1)
+                {
+                    return qualifiedTypeName.Substring(0, index);
+                }
+            }
+            return qualifiedTypeName;
         }
 
         private IFixPatch patch;

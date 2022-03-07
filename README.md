@@ -68,7 +68,7 @@ externTypes(13):
         UnusedClassA, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 
-methods: (2)
+methods(2):
         Method #0:
                 instructions(19):
                         [Instruction code: 19, operand: 196611]
@@ -135,15 +135,44 @@ methods: (2)
 
 
 externMethods(9):
-        [ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: .ctor, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Next, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Log, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: Get, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Contains, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: True, declaringType: UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null, methodName: FromJson, genericArgs: System.String[], parameters: FixIFix.IFIxParameter[]]
-        [ExternMethod isGenericInstance: False, declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, methodName: Concat, genericArgs: , parameters: FixIFix.IFIxParameter[]]
+        System.Random..ctor:
+                declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(0):
+
+        System.Random.Next:
+                declaringType: System.Random, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(2): System.Int32 System.Int32
+
+        System.String.Concat:
+                declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(2): System.Object System.Object
+
+        UnityEngine.Debug.Log:
+                declaringType: UnityEngine.Debug, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+                parameters(1): System.Object
+
+        UnityEngine.Networking.UnityWebRequest.Get:
+                declaringType: UnityEngine.Networking.UnityWebRequest, UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+                parameters(1): System.String
+
+        System.String.Contains:
+                declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(1): System.String
+
+        System.String.Concat:
+                declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(3): System.Object System.Object System.Object
+
+        UnityEngine.JsonUtility.FromJson:
+                declaringType: UnityEngine.JsonUtility, UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+                parameters(1): System.String
+                isGenericInstance: True
+                genericArgs: System.String[]
+
+        System.String.Concat:
+                declaringType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+                parameters(2): System.String System.String
+
 
 internStrings(7):
         FuncA invoked

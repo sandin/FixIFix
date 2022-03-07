@@ -110,10 +110,13 @@ namespace FixIFix
 
         private static string GetTypeNameOfQualifiedName(string qualifiedName)
         {
-            int index = qualifiedName.IndexOf(",");
-            if (index != -1)
+            if (qualifiedName != null)
             {
-                return qualifiedName.Substring(0, index);
+                int index = qualifiedName.IndexOf(",");
+                if (index != -1)
+                {
+                    return qualifiedName.Substring(0, index);
+                }
             }
             return qualifiedName;
         }
