@@ -8,6 +8,12 @@ The missing tool for [InjectFix](https://github.com/Tencent/InjectFix) patch fil
 
 * VS 2019
 
+​    
+
+# Install
+
+Download the latest version of zip file from [Releases](./releases), unzip it.
+
 ​          
 
 ## Usage
