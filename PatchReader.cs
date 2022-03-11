@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Reflection;
+using Mono.Cecil.Cil;
 
 namespace FixIFix
 {
@@ -64,44 +66,7 @@ namespace FixIFix
                     patch.externMethods = new IFixExternMethod[externMethodCount];
                     for (int i = 0; i < externMethodCount; i++)
                     {
-                        IFixExternMethod externMethod = new IFixExternMethod();
-                        externMethod.isGenericInstance = reader.ReadBoolean();
-                        if (externMethod.isGenericInstance)
-                        {
-                            externMethod.declaringType = patch.externTypes[reader.ReadInt32()];
-                            externMethod.methodName = reader.ReadString();
-                            int genericArgCount = reader.ReadInt32();
-                            externMethod.genericArgs = new string[genericArgCount];
-                            for (int j = 0; j < genericArgCount; j++)
-                            {
-                                externMethod.genericArgs[j] = patch.externTypes[reader.ReadInt32()];
-                            }
-                            int paramCount = reader.ReadInt32();
-                            externMethod.parameters = new IFIxParameter[paramCount];
-                            for (int j = 0; j < paramCount; j++)
-                            {
-                                IFIxParameter param = new IFIxParameter();
-                                param.isGeneric = reader.ReadBoolean();
-                                param.declaringType = param.isGeneric ? reader.ReadString() : patch.externTypes[reader.ReadInt32()];
-                                externMethod.parameters[j] = param;
-                            }
-                        }
-                        else
-                        {
-                            externMethod.declaringType = patch.externTypes[reader.ReadInt32()];
-                            externMethod.methodName = reader.ReadString();
-                            int paramCount = reader.ReadInt32();
-                            externMethod.parameters = new IFIxParameter[paramCount];
-
-                            for (int j = 0; j < paramCount; j++)
-                            {
-                                IFIxParameter param = new IFIxParameter();
-                                param.isGeneric = false;
-                                param.declaringType = patch.externTypes[reader.ReadInt32()];
-                                externMethod.parameters[j] = param;
-                            }
-                        }
-                        patch.externMethods[i] = externMethod;
+                        patch.externMethods[i] = readMethod(reader, patch);
                     }
 
                     int internStringsCount = reader.ReadInt32();
@@ -140,11 +105,10 @@ namespace FixIFix
                         patch.cctors[i] = reader.ReadInt32();
                     }
 
-                    // TODO
-
-                    /*
-                    anonymousStoreyInfos = new AnonymousStoreyInfo[reader.ReadInt32()];
-                    for (int i = 0; i < anonymousStoreyInfos.Length; i++)
+                    patch.anonymousStoreyInfos = new IFixAnonymousStoreyInfo[reader.ReadInt32()];
+                    //  c# 中定义的anonymous函数(lambada, deleaget等), 在实现过程中都会实现一个对象, 每一个对象都继承自 System.Object 对象, 
+                    //  每一个对象会生成两个方法: invoke 和 ctor, 注意，因此每一个对象都继承自 System.Object 对象, 因此 System.Object 这个父类也自带一个 ctor
+                    for (int i = 0; i < patch.anonymousStoreyInfos.Length; i++)
                     {
                         int fieldNum = reader.ReadInt32();
                         int[] fieldTypes = new int[fieldNum];
@@ -154,7 +118,7 @@ namespace FixIFix
                         }
                         int ctorId = reader.ReadInt32();
                         int ctorParamNum = reader.ReadInt32();
-                        var slots = readSlotInfo(reader, itfMethodToId, externTypes, maxId);
+                        int[] slots = readSlotInfo(reader, patch.externTypes);       //  FixMe
 
                         int virtualMethodNum = reader.ReadInt32();
                         int[] vTable = new int[virtualMethodNum];
@@ -162,19 +126,42 @@ namespace FixIFix
                         {
                             vTable[vm] = reader.ReadInt32();
                         }
-                        anonymousStoreyInfos[i] = new AnonymousStoreyInfo()
+                        patch.anonymousStoreyInfos[i] = new IFixAnonymousStoreyInfo()
                         {
-                            CtorId = ctorId,
-                            FieldNum = fieldNum,
-                            FieldTypes = fieldTypes,
-                            CtorParamNum = ctorParamNum,
-                            Slots = slots,
-                            VTable = vTable
+                            ctorId = ctorId,
+                            fieldNum = fieldNum,        //  添加的匿名函数的个数
+                            fieldTypes = fieldTypes,
+                            ctorParamNum = ctorParamNum,
+                            slots = slots,
+                            vTable = vTable
                         };
                     }
-                    */
+                    
+                    patch.wrappersManagerImplName = reader.ReadString();
 
-                    // TODO
+                    patch.assemblyStr = reader.ReadString();
+
+                    patch.fixMethod = new IFixFixMethod();
+                    patch.fixMethod.fixCount = reader.ReadInt32();
+                    patch.fixMethod.fixMethods = new IFixExternMethod[patch.fixMethod.fixCount];
+                    patch.fixMethod.fixMethodIds = new int[patch.fixMethod.fixCount];
+
+                    for (int i = 0; i < patch.fixMethod.fixCount; i++)
+                    {
+                        patch.fixMethod.fixMethods[i] = readMethod(reader, patch);
+                        patch.fixMethod.fixMethodIds[i] = reader.ReadInt32();
+                    }
+
+                    patch.newClass = new IFixNewClass();
+                    int newClassCount = reader.ReadInt32();
+                    patch.newClass.newClassCount = newClassCount;
+                    patch.newClass.newClassFullName = new string[newClassCount];
+                    for (int i = 0; i < newClassCount; i++)
+                    {
+                        var newClassFullName = reader.ReadString();
+                        patch.newClass.newClassFullName[i] = newClassFullName;
+                        //var newClassName = Type.GetType(newClassFullName);
+                    }
                 }
             }
 
@@ -202,6 +189,7 @@ namespace FixIFix
                 foreach (IFixInstruction inst in method.instructions)
                 {
                     Console.WriteLine("\t\t\t" + inst.ToString());
+                    //Instruction instruction = Instruction.Create(inst.code, inst.operand);
                 }
                 Console.WriteLine("\t\texceptionHandlers(" + method.exceptionHandlers.Length + "):");
                 foreach (IFixExceptionHandler eh in method.exceptionHandlers)
@@ -267,6 +255,35 @@ namespace FixIFix
                 Console.WriteLine("\t" + cctor);
             }
             Console.WriteLine("");
+
+            Console.WriteLine("anonymousStoreyInfos(" + patch.anonymousStoreyInfos.Length + "):");
+            foreach (IFixAnonymousStoreyInfo anonymousStoreyInfo in patch.anonymousStoreyInfos)
+            {
+                Console.WriteLine("\t" + anonymousStoreyInfo.ToString());
+            }
+            Console.WriteLine("");
+
+            Console.WriteLine("wrappersManagerImplName:");
+            Console.WriteLine("\t" + patch.wrappersManagerImplName);
+
+            Console.WriteLine("assemblyStr:");
+            Console.WriteLine("\t" + patch.assemblyStr);
+
+            Console.WriteLine("fixMethods(" + patch.fixMethod.fixCount + "):");
+            i = 0;
+            for (; i < patch.fixMethod.fixCount; ++i)
+            {
+                Console.WriteLine("\t" + patch.fixMethod.fixMethodIds[i].ToString());
+                Console.WriteLine("\t" + patch.fixMethod.fixMethods[i].ToString());
+            }
+            Console.WriteLine("");
+
+            Console.WriteLine("newClasses(" + patch.newClass.newClassCount + "):");
+            foreach (var fullClassName in patch.newClass.newClassFullName)
+            {
+                Console.WriteLine("\t" + fullClassName);
+            }
+            Console.WriteLine("");
         }
         private static string StripAssemblyName(string qualifiedTypeName)
         {
@@ -279,6 +296,80 @@ namespace FixIFix
                 }
             }
             return qualifiedTypeName;
+        }
+
+        private static IFixExternMethod readMethod(BinaryReader reader, IFixPatch patch)
+        {
+            IFixExternMethod externMethod = new IFixExternMethod();
+            externMethod.isGenericInstance = reader.ReadBoolean();
+            if (externMethod.isGenericInstance)
+            {
+                externMethod.declaringType = patch.externTypes[reader.ReadInt32()];
+                externMethod.methodName = reader.ReadString();
+                int genericArgCount = reader.ReadInt32();
+                externMethod.genericArgs = new string[genericArgCount];
+                for (int j = 0; j < genericArgCount; j++)
+                {
+                    externMethod.genericArgs[j] = patch.externTypes[reader.ReadInt32()];
+                }
+                int paramCount = reader.ReadInt32();
+                externMethod.parameters = new IFIxParameter[paramCount];
+                for (int j = 0; j < paramCount; j++)
+                {
+                    IFIxParameter param = new IFIxParameter();
+                    param.isGeneric = reader.ReadBoolean();
+                    param.declaringType = param.isGeneric ? reader.ReadString() : patch.externTypes[reader.ReadInt32()];
+                    externMethod.parameters[j] = param;
+                }
+            }
+            else
+            {
+                externMethod.declaringType = patch.externTypes[reader.ReadInt32()];
+                externMethod.methodName = reader.ReadString();
+                int paramCount = reader.ReadInt32();
+                externMethod.parameters = new IFIxParameter[paramCount];
+
+                for (int j = 0; j < paramCount; j++)
+                {
+                    IFIxParameter param = new IFIxParameter();
+                    param.isGeneric = false;
+                    param.declaringType = patch.externTypes[reader.ReadInt32()];
+                    externMethod.parameters[j] = param;
+                }
+            }
+
+            return externMethod;
+        }
+
+        private int[] readSlotInfo(BinaryReader reader, string[] externTypes)
+        {
+            int interfaceCount = reader.ReadInt32();
+
+            if (interfaceCount == 0) return null;
+
+            int[] slots = new int[interfaceCount + 1];
+            for (int j = 0; j < slots.Length; j++)
+            {
+                slots[j] = -1;
+            }
+
+            //  BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance
+            UInt32[] bitArr = { 2, 16, 4 };
+
+            //VirtualMachine._Info(string.Format("-------{0}----------", interfaceCount));
+            for (int i = 0; i < interfaceCount; i++)
+            {
+                var itfId = reader.ReadInt32();
+                var itf = patch.externTypes[itfId];
+                //VirtualMachine._Info(itf.ToString());
+                foreach (var method in bitArr)
+                {
+                    int methodId = reader.ReadInt32();
+                    slots[method] = methodId;
+                    //VirtualMachine._Info(string.Format("<<< {0} [{1}]", method, methodId));
+                }
+            }
+            return slots;
         }
 
         private IFixPatch patch;

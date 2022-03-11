@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace FixIFix
 {
@@ -17,6 +18,9 @@ namespace FixIFix
         public int[] cctors;
         public IFixAnonymousStoreyInfo[] anonymousStoreyInfos;
         public string wrappersManagerImplName;
+        public string assemblyStr;
+        public IFixFixMethod fixMethod;
+        public IFixNewClass newClass;
 
         public override string ToString()
         {
@@ -32,6 +36,9 @@ namespace FixIFix
                     + ", cctors: " + cctors
                     + ", anonymousStoreyInfos: " + anonymousStoreyInfos
                     + ", wrappersManagerImplName: " + wrappersManagerImplName
+                    + ", assemblyStr: " + assemblyStr
+                    + ", assemblyStr: " + fixMethod
+                    + ", assemblyStr: " + newClass
                     + "]";
         }
     }
@@ -145,6 +152,7 @@ namespace FixIFix
         public int fieldNum;
         public int[] fieldTypes;
         public int ctorId;
+        public int ctorParamNum;
         public int[] slots;
         public int[] vTable;
 
@@ -154,9 +162,49 @@ namespace FixIFix
                     + "fieldNum: " + fieldNum
                     + ", fieldTypes: " + fieldTypes
                     + ", ctorId: " + ctorId
+                    + ", ctorParamNum: " + ctorParamNum
                     + ", slots: " + slots
                     + ", vTable: " + vTable
                     + "]";
+        }
+    }
+
+    public class IFixFixMethod
+    {
+        public IFixExternMethod[] fixMethods;
+        public int[] fixMethodIds;
+        public int fixCount;
+
+        public override string ToString()
+        {
+            return "[fixMethods "
+                    + "fixCount: " + fixCount
+                    + ", fixMethodIds: " + fixMethodIds
+                    + "]";
+        }
+    }
+
+    public class IFixNewClass
+    {
+        public int newClassCount;
+        public string[] newClassFullName;
+
+        public override string ToString()
+        {
+            return "[NewClass "
+                    + "newClassCount: " + newClassCount
+                    + ", newClassFullName: " + newClassFullName
+                    + "]";
+        }
+    }
+
+    public class IFixIDTagAttribute : Attribute
+    {
+        public int ID;
+
+        public IFixIDTagAttribute(int id)
+        {
+            ID = id;
         }
     }
 }
