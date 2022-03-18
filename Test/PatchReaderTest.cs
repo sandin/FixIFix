@@ -33,8 +33,9 @@ namespace FixIFix.Test
         public void ReaderTest()
         {
             PatchReader patchReader = new PatchReader();
-            IFixPatch fixPatch = patchReader.Read("D:\\desktop\\fix_test\\android\\Assembly-CSharp.patch.bytes");
+            // IFixPatch fixPatch = patchReader.Read("D:\\desktop\\fix_test\\android\\Assembly-CSharp.patch.bytes");
             //IFixPatch fixPatch = patchReader.Read("D:\\desktop\\fix_test\\windows\\Assembly-CSharp.patch.bytes");
+            IFixPatch fixPatch = patchReader.Read("C:\\Users\\Kingsoft\\New Unity Project (2)\\Assembly-CSharp.patch.bytes");
             if (fixPatch == null)
             {
                 Console.WriteLine("patchReader.Read failed.");
@@ -48,7 +49,30 @@ namespace FixIFix.Test
             Assert.IsTrue(fixPatch.interfaceBridgeTypeName.Contains("IFix.ILFixInterfaceBridge, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
             //  externTypes
-            Assert.IsTrue(fixPatch.interfaceBridgeTypeName.Length != 0);
+            Assert.IsTrue(fixPatch.externTypes.Length != 0);
+            bool inner_class_flags = false;
+            bool inner_enum_flags = false;
+            bool template_flags = false;
+            for (int i = 0; i < fixPatch.externTypes.Length; ++i)
+            {
+                if (fixPatch.externTypes[i].Contains("NewBehaviourScript.InnerClass"))
+                {
+                    inner_class_flags = true;
+                }
+                if (fixPatch.externTypes[i].Contains("NewBehaviourScript.InnerEnum"))
+                {
+                    inner_enum_flags = true;
+                }
+
+                //  FIXME
+                if (fixPatch.externTypes[i].Contains("System.Collections.Generic.List`1[[NewBehaviourScript+InnerClass"))
+                {
+                    template_flags = true;
+                }
+            }
+            Assert.IsTrue(inner_class_flags);
+            Assert.IsTrue(template_flags);
+            Assert.IsTrue(inner_enum_flags);
 
             //  methods
             Assert.IsTrue(fixPatch.methods.Length != 0);
@@ -59,21 +83,17 @@ namespace FixIFix.Test
 
             //  internStrings
             Assert.IsNotNull(fixPatch.internStrings);
-            Assert.IsTrue(fixPatch.internStrings[0].Contains("FuncA invoked"));
 
             //  fieldInfos
             Assert.IsNotNull(fixPatch.fieldInfos);
-            Assert.IsTrue(fixPatch.fieldInfos.Length == 3);
 
             //  staticFieldTypes
             Assert.IsNotNull(fixPatch.staticFieldTypes);
-            Assert.IsTrue(fixPatch.staticFieldTypes.Length == 4);
 
             //  cctors
             Assert.IsNotNull(fixPatch.cctors);
-            Assert.IsTrue(fixPatch.cctors.Length == 4);
 
-            //  anonymousStoreyInfos
+/*            //  anonymousStoreyInfos
             Assert.IsNotNull(fixPatch.anonymousStoreyInfos);
 
             //  wrappersManagerImplName
@@ -89,7 +109,7 @@ namespace FixIFix.Test
             //  newClasses
             Assert.IsNotNull(fixPatch.newClass);
             Assert.AreEqual(fixPatch.newClass.newClassCount, 2);
-            Assert.IsTrue(fixPatch.newClass.newClassFullName[0].Contains("NewClass"));
+            Assert.IsTrue(fixPatch.newClass.newClassFullName[0].Contains("NewClass"));*/
         }
 
     }
