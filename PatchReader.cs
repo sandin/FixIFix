@@ -256,7 +256,7 @@ namespace FixIFix
             }
             Console.WriteLine("");
 
-            Console.WriteLine("anonymousStoreyInfos(" + patch.anonymousStoreyInfos.Length + "):");
+/*            Console.WriteLine("anonymousStoreyInfos(" + patch.anonymousStoreyInfos.Length + "):");
             foreach (IFixAnonymousStoreyInfo anonymousStoreyInfo in patch.anonymousStoreyInfos)
             {
                 Console.WriteLine("\t" + anonymousStoreyInfo.ToString());
@@ -283,7 +283,7 @@ namespace FixIFix
             {
                 Console.WriteLine("\t" + fullClassName);
             }
-            Console.WriteLine("");
+            Console.WriteLine("");*/
         }
         private static string StripAssemblyName(string qualifiedTypeName)
         {
