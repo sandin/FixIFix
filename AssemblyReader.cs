@@ -7,14 +7,14 @@ using System.Text;
 
 namespace FixIFix
 {
-    class AssemblyReader
+    public class AssemblyReader
     {
 
         public AssemblyReader()
         {
 
         }
-        public void Read(String assmeblyPath)
+        public void Read(string assmeblyPath, string assmeblySearchDirectory = null)
         {
             try
             {
@@ -31,14 +31,19 @@ namespace FixIFix
             }
 
             resolver = assembly.MainModule.AssemblyResolver as BaseAssemblyResolver;
+            if (assmeblySearchDirectory == null)
+            {
+                assmeblySearchDirectory = System.IO.Path.GetDirectoryName(assmeblyPath);
+            }
+            resolver.AddSearchDirectory(assmeblySearchDirectory);
         }
 
         public void Dump() { 
             //Gets all types which are declared in the Main Module of "MyLibrary.dll"
-            foreach (TypeDefinition type in assembly.MainModule.Types)
+            foreach (TypeDefinition type in assembly.GetAllType())
             {
                 //Writes the full name of a type
-                Console.WriteLine("Type: " + type.GetAssemblyQualifiedName());
+                Console.WriteLine("Type: " + type.GetAssemblyQualifiedName() + ", FullName=" + type.FullName);
                 if (type.Name != "<Module>")
                 {
                     //Gets all methods of the current type
@@ -62,32 +67,30 @@ namespace FixIFix
             return GetType(typeFullName, ignoreAssemblyName) != null;
         }
 
-        private TypeDefinition GetType(string typeFullName, bool ignoreAssemblyName = false)
+        public TypeReference GetType(string typeFullName, bool ignoreAssemblyName = false)
         {
             if (assembly != null)
             {
-                List<TypeDefinition> types = assembly.GetAllType();
-                foreach (TypeDefinition type in types)
+                foreach (ModuleDefinition module in assembly.Modules)
                 {
-                    if (IsTypeEquals(type, typeFullName, ignoreAssemblyName))
+                    TypeReference type = module.GetType(typeFullName, !ignoreAssemblyName  /* runtimeName */);
+                    if (type != null)
                     {
-                        return type; // found
+                        return type;                
                     }
                 }
             }
             return null;
         }
 
-        private static bool IsTypeEquals(TypeDefinition typeDefinition, string typeFullName, bool ignoreAssemblyName = false)
+        private bool IsTypeEquals(TypeReference typeDefinition, string typeFullName, bool ignoreAssemblyName = false)
         {
-            if (ignoreAssemblyName)
+            TypeReference type = GetType(typeFullName, ignoreAssemblyName);
+            if (type == null || typeDefinition == null)
             {
-                return typeDefinition.FullName == StripAssemblyName(typeFullName);
+                return false;
             }
-            else
-            {
-                return typeDefinition.GetAssemblyQualifiedName(null, false) == typeFullName;
-            }
+            return typeDefinition.FullName == type.FullName;
         }
 
         #endregion
@@ -101,13 +104,57 @@ namespace FixIFix
  
         private MethodDefinition GetMethod(IFixExternMethod method, bool ignoreAssemblyName = false)
         {
-            TypeDefinition typeDefinition = GetType(method.declaringType, ignoreAssemblyName);
-            if (typeDefinition != null)
+            TypeReference typeRef = GetType(method.declaringType, ignoreAssemblyName);
+            if (typeRef != null)
             {
-                foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
+                TypeDefinition targetTypeDefinition = null;
+                if (typeRef.IsGenericInstance)
                 {
-                    if (IsMethodEquals(methodDefinition, method, ignoreAssemblyName)) {
-                        return methodDefinition;
+                    GenericInstanceType genericIns = ((GenericInstanceType)typeRef);
+                    TypeReference genericTypeRef = genericIns.ElementType;
+                    try
+                    {
+                        targetTypeDefinition = genericTypeRef.Resolve();
+                    } catch (Exception ignore) { 
+                    }
+                }
+                else if (typeRef.IsDefinition)
+                {
+                    try
+                    {
+                        targetTypeDefinition = typeRef.Resolve();
+                    } catch (Exception ignore) {
+                    }
+                } 
+                else if (typeRef.IsNested)
+                {
+                    try
+                    {
+                        targetTypeDefinition = typeRef.Resolve();
+                    }
+                    catch (Exception ignore)
+                    {
+                    }
+                }
+                else  
+                {
+                    try
+                    {
+                        targetTypeDefinition = typeRef.Resolve();
+                    }
+                    catch (Exception ignore)
+                    {
+                    }
+                }
+
+                if (targetTypeDefinition != null)
+                {
+                    foreach (MethodDefinition methodDefinition in targetTypeDefinition.Methods)
+                    {
+                        if (IsMethodEquals(methodDefinition, method, ignoreAssemblyName))
+                        {
+                            return methodDefinition;
+                        }
                     }
                 }
             }
@@ -115,6 +162,9 @@ namespace FixIFix
             return null;
         }
 
+        // e.g.:
+        // qualifiedName = AutoResolution+LastType, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null
+        // return AutoResolution+LastType
         private static string StripAssemblyName(string qualifiedName)
         {
             if (qualifiedName != null)
@@ -128,65 +178,35 @@ namespace FixIFix
             return qualifiedName;
         }
 
-        private static bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool ignoreAssemblyName = false)
+        private bool IsMethodEquals(MethodDefinition methodDefinition, IFixExternMethod externMethod, bool ignoreAssemblyName = false)
         {
             if (methodDefinition != null && externMethod != null)
             {
-                if (IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType, ignoreAssemblyName)
-                    && methodDefinition.Name == externMethod.methodName
-                    && methodDefinition.IsGenericInstance == externMethod.isGenericInstance
+                if (methodDefinition.Name == externMethod.methodName
+                    //&& methodDefinition.IsGenericInstance == externMethod.isGenericInstance // TODO: System.Array.Empty() methodDefinition.IsGenericInstance = false
                     && methodDefinition.GenericParameters.Count == (externMethod.genericArgs != null ? externMethod.genericArgs.Length : 0)
-                    && methodDefinition.Parameters.Count == (externMethod.parameters != null ? externMethod.parameters.Length : 0))
-                {
+                    && methodDefinition.Parameters.Count == (externMethod.parameters != null ? externMethod.parameters.Length : 0)) {
+                    //if (!IsTypeEquals(methodDefinition.DeclaringType, externMethod.declaringType, ignoreAssemblyName)) {
+                    //    return false;
+                    //}
+
                     for (int i = 0; i < methodDefinition.GenericParameters.Count; i++)
                     {
                         GenericParameter genericParameter = methodDefinition.GenericParameters[i];
-                        string genericArg = StripAssemblyName(externMethod.genericArgs[i]);
-                        if (genericParameter.FullName != genericArg) // TODO: IsTypeEquals?
+                        string genericArg = externMethod.genericArgs[i];
+                        if (!IsTypeEquals(genericParameter, genericArg))
                         {
-                            return false; 
+                            return false;
                         }
                     }
+
                     for (int i = 0; i < methodDefinition.Parameters.Count; i++)
                     {
                         ParameterDefinition parameterDefinition = methodDefinition.Parameters[i];
                         IFIxParameter parameter = externMethod.parameters[i];
-                        if (ignoreAssemblyName)
+                        if (!IsTypeEquals(parameterDefinition.ParameterType, parameter.declaringType))
                         {
-                            if (parameterDefinition.ParameterType.FullName != StripAssemblyName(parameter.declaringType)) {
-                                return false; 
-                            }
-                        }
-                        else
-                        {
-                            string parameterTypeName;
-                            if (parameter.isGeneric)
-                            {
-                                if (parameterDefinition.ParameterType.IsGenericParameter)
-                                {
-                                    parameterTypeName = parameterDefinition.ParameterType.Name;
-                                }
-                                else
-                                {
-                                    parameterTypeName = parameterDefinition.ParameterType.GetAssemblyQualifiedName(methodDefinition.DeclaringType, true);
-                                }
-                            }
-                            else
-                            {
-                                if (parameterDefinition.ParameterType.IsGenericParameter)
-                                {
-                                    parameterTypeName = (parameterDefinition.ParameterType as GenericParameter).ResolveGenericArgument(methodDefinition.DeclaringType).GetAssemblyQualifiedName(); // TODO:?
-                                }
-                                else
-                                {
-                                    parameterTypeName = parameterDefinition.ParameterType.GetAssemblyQualifiedName(); // TODO:?
-                                }
-                            }
-
-                            if (parameterTypeName != parameter.declaringType)
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                     }
                     return true;
@@ -206,10 +226,10 @@ namespace FixIFix
 
         private FieldDefinition GetField(IFixFieldInfo field, bool skipAssemblyQualified = false)
         {
-            TypeDefinition typeDefinition = GetType(field.declaringType, skipAssemblyQualified);
-            if (typeDefinition != null)
+            var typeDefinition = GetType(field.declaringType, skipAssemblyQualified);
+            if (typeDefinition != null && typeDefinition.IsDefinition)
             {
-                foreach (FieldDefinition fieldDefinition in typeDefinition.Fields)
+                foreach (FieldDefinition fieldDefinition in ((TypeDefinition)typeDefinition).Fields)
                 {
                     if (IsFieldEquals(fieldDefinition, field, skipAssemblyQualified)) {
                         return fieldDefinition;
@@ -220,7 +240,7 @@ namespace FixIFix
             return null;
         }
 
-        private static bool IsFieldEquals(FieldDefinition fieldDefinition, IFixFieldInfo fieldInfo, bool skipAssemblyQualified = false)
+        private bool IsFieldEquals(FieldDefinition fieldDefinition, IFixFieldInfo fieldInfo, bool skipAssemblyQualified = false)
         {
             if (fieldDefinition != null && fieldInfo != null)
             {

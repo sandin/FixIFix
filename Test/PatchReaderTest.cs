@@ -29,6 +29,46 @@ namespace FixIFix.Test
             Assert.True(true);
         }
 
+
+        [Test]
+        public void TypeNameTest()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            Assert.True(reader.HasType("AutoResolution+LastType, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null", false));
+            Assert.True(reader.HasType("FurRenderer, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null", false));
+            Assert.True(reader.HasType("System.Collections.Generic.List`1[[FurRenderer, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", false));
+            Assert.True(reader.HasType("FurRenderer", true));
+            Assert.True(reader.HasType("System.Collections.Generic.List`1[[FurRenderer", true));
+        }
+
+        [Test]
+        public void GetMethodTest1()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+
+            //Assert.True(reader.HasType("System.Collections.Generic.List`1[[FurRenderer, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", true));
+
+            IFixExternMethod method = new IFixExternMethod();
+            method.declaringType = "System.Collections.Generic.List`1[[FurRenderer, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            method.methodName = ".ctor";
+            Assert.True(reader.HasMethod(method));
+        }
+
+        [Test]
+        public void GetMethodTest2()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\mscorlib.dll");
+
+            IFixExternMethod method = new IFixExternMethod();
+            method.declaringType = "System.Array, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            method.methodName = "Empty";
+            Assert.True(reader.HasMethod(method));
+        }
+
+
         [Test]
         public void ReaderTest()
         {

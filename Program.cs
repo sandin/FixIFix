@@ -54,6 +54,7 @@ namespace FixIFix
                 {
                     ignoreAssemblyName = Program.IsoptionInArgs(args, "-ignoreAssemblyName");
                 }
+                Console.WriteLine("ignoreAssemblyName: " + ignoreAssemblyName);
                 string assembliesPath = args[2];
                 return CheckPatch(filepath, assembliesPath, ignoreAssemblyName);
             } else

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AssemblyReader.cs" />
     <Compile Include="CecilExtensions.cs" />
+    <Compile Include="TypeNameParser.cs" />
     <Compile Include="IFixPatch.cs" />
     <Compile Include="PatchReader.cs" />
     <Compile Include="Program.cs" />
