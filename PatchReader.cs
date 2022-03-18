@@ -105,7 +105,7 @@ namespace FixIFix
                         patch.cctors[i] = reader.ReadInt32();
                     }
 
-                    patch.anonymousStoreyInfos = new IFixAnonymousStoreyInfo[reader.ReadInt32()];
+                    /*patch.anonymousStoreyInfos = new IFixAnonymousStoreyInfo[reader.ReadInt32()];
                     //  c# 中定义的anonymous函数(lambada, deleaget等), 在实现过程中都会实现一个对象, 每一个对象都继承自 System.Object 对象, 
                     //  每一个对象会生成两个方法: invoke 和 ctor, 注意，因此每一个对象都继承自 System.Object 对象, 因此 System.Object 这个父类也自带一个 ctor
                     for (int i = 0; i < patch.anonymousStoreyInfos.Length; i++)
@@ -161,7 +161,7 @@ namespace FixIFix
                         var newClassFullName = reader.ReadString();
                         patch.newClass.newClassFullName[i] = newClassFullName;
                         //var newClassName = Type.GetType(newClassFullName);
-                    }
+                    }*/
                 }
             }
 
@@ -365,7 +365,7 @@ namespace FixIFix
                 foreach (var method in bitArr)
                 {
                     int methodId = reader.ReadInt32();
-                    slots[method] = methodId;
+                    // slots[method] = methodId;
                     //VirtualMachine._Info(string.Format("<<< {0} [{1}]", method, methodId));
                 }
             }
