@@ -43,6 +43,7 @@ namespace IFix
                 }
             }
 
+     
             if (contextType.IsNested)
             {
                 return gp.ResolveGenericArgument(contextType.DeclaringType);

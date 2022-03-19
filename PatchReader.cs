@@ -206,17 +206,18 @@ namespace FixIFix
             {
                 Console.WriteLine("\t" + StripAssemblyName(externMethod.declaringType) + "." + externMethod.methodName + ":");
                 Console.WriteLine("\t\tdeclaringType: " + externMethod.declaringType);
+                Console.WriteLine("\t\tmethodName: " + externMethod.methodName);
                 StringBuilder sb = new StringBuilder();
                 foreach (IFIxParameter p in externMethod.parameters)
                 {
-                    sb.Append(StripAssemblyName(p.declaringType));
+                    sb.Append(p.declaringType);
                     if (p.isGeneric)
                     {
                         sb.Append("(isGeneric=");
                         sb.Append(p.isGeneric);
                         sb.Append(")");
                     }
-                    sb.Append(" ");
+                    sb.Append(", ");
                 }
                 Console.WriteLine("\t\tparameters(" + externMethod.parameters.Length + "): " + sb.ToString());
                 if (externMethod.isGenericInstance)

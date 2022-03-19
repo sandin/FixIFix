@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ThirdParty\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\ThirdParty\nunit-2.6.2\nunit.core.dll</HintPath>
     </Reference>
@@ -48,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyReaderTest.cs" />
+    <Compile Include="CheckPatchTest.cs" />
     <Compile Include="PatchReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

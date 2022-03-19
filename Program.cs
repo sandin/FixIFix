@@ -90,7 +90,7 @@ namespace FixIFix
         }
 
         // cmd: "checkpatch ..\..\Test\data\Assembly-CSharp.patch.bytes ..\..\Test\data\Managed"
-        static int CheckPatch(string patchFilePath, string assembliesPath, bool ignoreAssemblyName)
+        public static int CheckPatch(string patchFilePath, string assembliesPath, bool ignoreAssemblyName)
         {
             if (!File.Exists(patchFilePath))
             {
