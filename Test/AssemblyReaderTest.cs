@@ -143,5 +143,81 @@ namespace FixIFix.Test
             method.parameters[1].declaringType = "UnityEngine.Texture2D&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
             Assert.True(reader.HasMethod(method, true));
         }
+
+        [Test]
+        public void GetMethodTest6()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\mscorlib.dll");
+
+            IFixExternMethod method = new IFixExternMethod();
+            method.declaringType = "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            method.methodName = ".ctor";
+            method.parameters = new IFIxParameter[1];
+            method.parameters[0] = new IFIxParameter();
+            method.parameters[0].isGeneric = false;
+            method.parameters[0].declaringType = "System.Collections.Generic.IEnumerable`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            Assert.True(reader.HasMethod(method, true));
+        }
+
+        [Test]
+        public void ResolveTypeNameWithGaTest()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.String");
+                Assert.AreEqual("System.String&", reader.ResolveTypeNameWithGa("T&", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.String");
+                Assert.AreEqual("System.String[]", reader.ResolveTypeNameWithGa("T[]", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.String");
+                Assert.AreEqual("System.String", reader.ResolveTypeNameWithGa("T", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T1", "System.String");
+                Assert.AreEqual("System.String", reader.ResolveTypeNameWithGa("T1", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.String");
+                Assert.AreEqual("System.Collections.Generic.List`1<System.String>",
+                    reader.ResolveTypeNameWithGa("System.Collections.Generic.List`1<T>", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T1", "System.String");
+                gaMap.Add("T2", "System.Int32");
+                Assert.AreEqual("System.Collections.Generic.Dictionary`2<System.String, System.Int32>",
+                    reader.ResolveTypeNameWithGa("System.Collections.Generic.Dictionary`2<T1, T2>", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T1", "System.String");
+                gaMap.Add("T2", "System.Int32");
+                Assert.AreEqual("System.Collections.Generic.Dictionary`2<System.String, System.Collections.Generic.List`1<System.Int32>>",
+                    reader.ResolveTypeNameWithGa("System.Collections.Generic.Dictionary`2<T1, System.Collections.Generic.List`1<T2>>", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T1", "System.String");
+                gaMap.Add("T2", "System.Int32");
+                Assert.AreEqual("System.Collections.Generic.Dictionary`2<System.Collections.Generic.List`1<System.String>, System.Collections.Generic.List`1<System.Int32>>",
+                    reader.ResolveTypeNameWithGa("System.Collections.Generic.Dictionary`2<System.Collections.Generic.List`1<T1>, System.Collections.Generic.List`1<T2>>", gaMap));
+            }
+        }
     }
 }

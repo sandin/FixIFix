@@ -237,7 +237,9 @@ namespace FixIFix
                                     {
                                         Console.WriteLine("warning: not match `" + externMethod.declaringType + "` `" + externMethod.methodName
                                             + "`,paramDefinition.Name=" + paramDefinition.ParameterType.Name
-                                            + ", externMethod.paramTypeName=" + paramTypeName);
+                                            + ", externMethod.paramTypeName=" + paramTypeName
+                                            + ", externMethodParam.isGeneric=" + externMethodParam.isGeneric
+                                            + ", externMethod.isGenericInstance=" + externMethod.isGenericInstance);
                                     }
                                     return false;
                                 }
@@ -250,7 +252,9 @@ namespace FixIFix
                                     {
                                         Console.WriteLine("warning: not match `" + externMethod.declaringType + "` `" + externMethod.methodName
                                             + "`,paramDefinition.ParameterType.FullName=" + paramDefinition.ParameterType.FullName
-                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType);
+                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType
+                                            + ", externMethodParam.isGeneric=" + externMethodParam.isGeneric
+                                            + ", externMethod.isGenericInstance=" + externMethod.isGenericInstance);
                                     }
                                     return false;
                                 }
@@ -303,16 +307,17 @@ namespace FixIFix
                                     }
                                 }
 
-                                string genericParemeter = paramDefinition.ParameterType.Name.Replace("&", ""); // TODO: ref? array?
-                                string genericArgument = gaMap.ContainsKey(genericParemeter) ? gaMap[genericParemeter] : null;
+                                string genericArgument = ResolveTypeNameWithGa(paramDefinition.ParameterType.FullName, gaMap);
                                 TypeReference typeRef = assembly.MainModule.GetType(externMethodParam.declaringType, true);
-                                if (genericArgument != typeRef.FullName.Replace("&", ""))
+                                if (genericArgument != typeRef.FullName)
                                 {
                                     if (debug)
                                     {
                                         Console.WriteLine("warning: not match `" + externMethod.declaringType + "` `" + externMethod.methodName
                                             + "`,paramDefinition.ParameterType=" + paramDefinition.ParameterType.FullName
-                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType);
+                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType
+                                            + ", externMethodParam.isGeneric=" + externMethodParam.isGeneric
+                                            + ", externMethod.isGenericInstance=" + externMethod.isGenericInstance);
                                     }
                                     return false;
                                 }
@@ -325,7 +330,9 @@ namespace FixIFix
                                     {
                                         Console.WriteLine("warning: not match `" + externMethod.declaringType + "` `" + externMethod.methodName
                                             + "`,paramDefinition.ParameterType.FullName=" + paramDefinition.ParameterType.FullName
-                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType);
+                                            + ", externMethodParam.declaringType=" + externMethodParam.declaringType
+                                            + ", externMethodParam.isGeneric=" + externMethodParam.isGeneric
+                                            + ", externMethod.isGenericInstance=" + externMethod.isGenericInstance);
                                     }
                                     return false;
                                 }
@@ -336,6 +343,138 @@ namespace FixIFix
                 } // endif(isGenericInstance)
             }
             return false;
+        }
+
+        // typeName: System.Collections.Generic.List`1<T>
+        // gaMap:   { T: System.String }
+        // result:   System.COllections.Generic.List`1<System.String>
+        public string ResolveTypeNameWithGa(string typeName, Dictionary<string, string> gaMap)
+        {
+            if (debug)
+            {
+                Console.WriteLine("FindGenericTypes, typeName=" + typeName);
+                foreach (KeyValuePair<string, string> kvp in gaMap)
+                {
+                    Console.WriteLine("gaMap=" + kvp.Key + ": " + kvp.Value);
+                }
+            }
+
+            if (gaMap.ContainsKey(typeName)) {
+                return gaMap[typeName];
+            }
+
+            string resolvedTypeName = typeName;
+            List<GenericTypeMatch> matches = FindGenericTypes(typeName);
+            int offset = 0;
+            foreach (GenericTypeMatch match in matches)
+            {
+                if (gaMap.ContainsKey(match.name))
+                {
+                    // Replace(match.name, gaMap[match.name]) at position match.index
+                    resolvedTypeName = resolvedTypeName.Remove(offset + match.index, match.name.Length).Insert(offset + match.index, gaMap[match.name]);
+                    offset += gaMap[match.name].Length - match.name.Length;
+                } 
+                else
+                {
+                    if (debug)
+                    {
+                        Console.WriteLine("[warning] can not find generic type name " + match.name);
+                    }
+                }
+            }
+            return resolvedTypeName;
+        }
+
+        struct GenericTypeMatch
+        {
+            public int index;
+            public string name;
+
+            public GenericTypeMatch(int index, string name)
+            {
+                this.index = index;
+                this.name = name;
+            }
+        }
+
+        private List<GenericTypeMatch> FindGenericTypes(string typeName)
+        {
+            List <GenericTypeMatch> result = new List<GenericTypeMatch>();
+            StringBuilder sb = new StringBuilder();
+            char c;
+            int lastStartTagIndex = 0;
+            for (int i = 0; i < typeName.Length; i++)
+            {
+                c = typeName[i];
+                if (c == '<')
+                {
+                    sb.Length = 0; // sb.Clear()
+                    lastStartTagIndex = i + 1;
+                    continue;
+                }
+                else if (c == ',')     // <T1, T2>
+                {
+                    if (sb.ToString().Trim().Length > 0)
+                    {
+                        result.Add(new GenericTypeMatch(lastStartTagIndex, sb.ToString().Trim()));
+                        if (debug)
+                        {
+                            Console.WriteLine("found match, index=" + (lastStartTagIndex) + ", name=" + sb.ToString().Trim());
+                        }
+                        i++; // skip " " after ","
+                        lastStartTagIndex = i + 1;
+                        sb.Length = 0; // sb.Clear()
+                        continue;
+                    }
+                }
+                else if (c == '[')          // []
+                {
+                    if (sb.ToString().Trim().Length > 0)
+                    {
+                        result.Add(new GenericTypeMatch(lastStartTagIndex, sb.ToString().Trim()));
+                        if (debug)
+                        {
+                            Console.WriteLine("found match, index=" + (lastStartTagIndex) + ", name=" + sb.ToString().Trim());
+                        }
+                        lastStartTagIndex = i + 1; 
+                        sb.Length = 0; // sb.Clear()
+                        continue;
+                    }
+                }
+                else if (c == '&')          // &
+                {
+                    if (sb.ToString().Trim().Length > 0)
+                    {
+                        result.Add(new GenericTypeMatch(lastStartTagIndex, sb.ToString().Trim()));
+                        if (debug)
+                        {
+                            Console.WriteLine("found match, index=" + (lastStartTagIndex) + ", name=" + sb.ToString().Trim());
+                        }
+                        lastStartTagIndex = i + 1; 
+                        sb.Length = 0; // sb.Clear()
+                        // not continue, need "&"
+                    }
+                }
+                else if (c == '>')
+                {
+                    if (sb.ToString().Trim().Length > 0)
+                    {
+                        result.Add(new GenericTypeMatch(lastStartTagIndex, sb.ToString().Trim()));
+                        if (debug)
+                        {
+                            Console.WriteLine("found match, index=" + (i - 1) + ", name=" + sb.ToString().Trim());
+                        }
+                        sb.Length = 0; // sb.Clear()
+                        continue;
+                    }
+                }
+                sb.Append(c);
+            }
+            if (result.Count == 0) // not found
+            {
+                result.Add(new GenericTypeMatch(0, typeName));
+            }
+            return result;
         }
 
         #endregion
