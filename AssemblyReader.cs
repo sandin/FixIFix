@@ -170,6 +170,17 @@ namespace FixIFix
 
         private bool IsMethodEquals(TypeReference typeReference /* TODO */, MethodDefinition methodDefinition, IFixExternMethod externMethod, bool ignoreAssemblyName = false)
         {
+            // TODO: int[,] 之类的多维数组, 在运行时会按照 System.Array 创造一个新的类，这个类中的 property 相关函数(.ctor, Get, Set) 由于在编译期不存在，因此导致
+            // Error: can not found method: `.ctor` in type: System.Int32[,], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+            // Error: can not found method: `Set` in type: System.Int32[,], mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089
+            // Error: can not found method: `Get` in type: System.Int32[,], mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089
+            // 因此加上判断是否为Array 的逻辑， 对于 .ctor, Get, Set 方法实现在如下链接中
+            // https://github.com/dotnet/runtime/blob/4881a639e7c3f27b5a8d2d160e234d8055333cda/src/mono/mono/metadata/class-init.c
+            if (typeReference.IsArray)
+            {
+                return true;
+            }
+
             if (methodDefinition != null && externMethod != null)
             {
                 int externMethodParametersCount = externMethod.parameters != null ? externMethod.parameters.Length : 0;
@@ -322,7 +333,7 @@ namespace FixIFix
                                     return false;
                                 }
                             }
-                            else // param is not generci
+                            else // param is not generic
                             {
                                 if (!IsTypeEquals(paramDefinition.ParameterType, externMethodParam.declaringType, ignoreAssemblyName))
                                 {
@@ -436,6 +447,11 @@ namespace FixIFix
                         {
                             Console.WriteLine("found match, index=" + (lastStartTagIndex) + ", name=" + sb.ToString().Trim());
                         }
+                        while (i < typeName.Length && typeName[i] != ']')
+                        {
+                            ++i;
+                        }
+                        i += i < typeName.Length ? 1 : 0;
                         lastStartTagIndex = i + 1; 
                         sb.Length = 0; // sb.Clear()
                         continue;

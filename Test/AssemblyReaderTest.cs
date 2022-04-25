@@ -28,7 +28,7 @@ namespace FixIFix.Test
         public void TypeNameTest()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\Assembly-CSharp.dll");
 
             Assert.False(reader.HasType("Not.Exists.Class", true));
             Assert.True(reader.HasType("FurRenderer", true));
@@ -42,23 +42,28 @@ namespace FixIFix.Test
         public void GetTypeNameTest()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\Assembly-CSharp.dll");
             TypeReference type;
 
             type = reader.GetType("System.Object", false);
             Assert.NotNull(type);
             Assert.AreEqual("System.Object", type.FullName);
 
-            //type = reader.GetType("System.Object[]", false);
-            //Assert.NotNull(type);
-            //Assert.AreEqual("System.Object[]", type.FullName);
+/*            type = reader.GetType("System.Int32[,]", false);
+            Assert.NotNull(type);
+            Assert.AreEqual("System.Int32[,]", type.FullName);*/
+
+
+/*            type = reader.GetType("System.Object[]", false);
+            Assert.NotNull(type);
+            Assert.AreEqual("System.Object[]", type.FullName);*/
         }
 
         [Test]
         public void GetMethodTest1()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\Assembly-CSharp.dll");
 
             //Assert.True(reader.HasType("System.Collections.Generic.List`1[[FurRenderer, Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", true));
 
@@ -72,7 +77,7 @@ namespace FixIFix.Test
         public void GetMethodTest2()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\mscorlib.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\mscorlib.dll");
 
             IFixExternMethod method = new IFixExternMethod();
             method.declaringType = "System.Array, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
@@ -86,7 +91,7 @@ namespace FixIFix.Test
         public void GetMethodTest3()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\Assembly-CSharp.dll");
 
             IFixExternMethod method = new IFixExternMethod();
             method.declaringType = "UnityEngine.AndroidJavaObject, UnityEngine.AndroidJNIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
@@ -105,7 +110,7 @@ namespace FixIFix.Test
         public void GetMethodTest4()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\mscorlib.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\mscorlib.dll");
 
             IFixExternMethod method = new IFixExternMethod();
             method.declaringType = "System.Threading.Interlocked, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
@@ -129,7 +134,7 @@ namespace FixIFix.Test
         public void GetMethodTest5()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\Assembly-CSharp.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\Assembly-CSharp.dll");
 
             IFixExternMethod method = new IFixExternMethod();
             method.declaringType = "SimpleDictionaryInt16`2[[System.UInt32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=2.0.0.668, Culture=neutral, PublicKeyToken=null";
@@ -148,7 +153,7 @@ namespace FixIFix.Test
         public void GetMethodTest6()
         {
             AssemblyReader reader = new AssemblyReader();
-            reader.Read("c:\\Users\\liudingsan\\Downloads\\Il2CppDump\\DummyDll\\mscorlib.dll");
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\mscorlib.dll");
 
             IFixExternMethod method = new IFixExternMethod();
             method.declaringType = "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
@@ -157,6 +162,25 @@ namespace FixIFix.Test
             method.parameters[0] = new IFIxParameter();
             method.parameters[0].isGeneric = false;
             method.parameters[0].declaringType = "System.Collections.Generic.IEnumerable`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            Assert.True(reader.HasMethod(method, true));
+        }
+
+        [Test]
+        public void GetMethodTest7()
+        {
+            AssemblyReader reader = new AssemblyReader();
+            reader.Read("D:\\desktop\\fix_test\\android\\DummyDll\\mscorlib.dll");
+            IFixExternMethod method = new IFixExternMethod();
+            method.declaringType = "System.Int32[,], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            method.methodName = ".Get";
+            method.isGenericInstance = true;
+            method.parameters = new IFIxParameter[2];
+            method.parameters[0] = new IFIxParameter();
+            method.parameters[0].isGeneric = false;
+            method.parameters[0].declaringType = "System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            method.parameters[1] = new IFIxParameter();
+            method.parameters[1].isGeneric = false;
+            method.parameters[1].declaringType = "System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
             Assert.True(reader.HasMethod(method, true));
         }
 
@@ -217,6 +241,19 @@ namespace FixIFix.Test
                 gaMap.Add("T2", "System.Int32");
                 Assert.AreEqual("System.Collections.Generic.Dictionary`2<System.Collections.Generic.List`1<System.String>, System.Collections.Generic.List`1<System.Int32>>",
                     reader.ResolveTypeNameWithGa("System.Collections.Generic.Dictionary`2<System.Collections.Generic.List`1<T1>, System.Collections.Generic.List`1<T2>>", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.Int32");
+                gaMap.Add("TString", "System.String");
+                Assert.AreEqual("System.Int32[,],System.String[,]", reader.ResolveTypeNameWithGa("T[,],TString[,]", gaMap));
+            }
+
+            {
+                var gaMap = new Dictionary<string, string>();
+                gaMap.Add("T", "System.Int32");
+                Assert.AreEqual("System.Int32[,,]", reader.ResolveTypeNameWithGa("T[,,]", gaMap));
             }
         }
     }
