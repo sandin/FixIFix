@@ -43,7 +43,7 @@ namespace FixIFix
             foreach (TypeDefinition type in assembly.GetAllType())
             {
                 //Writes the full name of a type
-                Console.WriteLine("Type: " + type.GetAssemblyQualifiedName() + ", FullName=" + type.FullName);
+                Console.WriteLine("Type: " + type.GetAssemblyQualifiedName() + ", FullName=" + type.FullName + ", BaseType=" + (type.BaseType != null ? type.BaseType.FullName : "None"));
                 if (type.Name != "<Module>")
                 {
                     //Gets all methods of the current type
